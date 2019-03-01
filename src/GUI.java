@@ -109,23 +109,11 @@ public class GUI {
 	    	String[] listData = new String[]{"Select AND,OR","AND", "OR"};
 
 	        // 创建一个下拉列表框
-	        final JComboBox<String> comboBox = new JComboBox<String>(listData);
+	        JComboBox<String> comboBox = new JComboBox<String>(listData);
 	        String[] condition = new String[1];
-	        // 添加条目选中状态改变的监听器
-	        comboBox.addItemListener(new ItemListener() {
-	            @Override
-	            public void itemStateChanged(ItemEvent e) {
-	                // 只处理选中的状态
-	                if (e.getStateChange() == ItemEvent.SELECTED) {
-	                	if (comboBox.getSelectedIndex() != 0) {
-	                		 condition[0] = comboBox.getSelectedItem().toString();
-	                	}
-	                    
-	                }
-	            }
-	        });
+	        
 
-	        // 设置默认选中的条目
+	        // set default value
 	        comboBox.setSelectedIndex(0);
 	        
 	        //
@@ -195,11 +183,12 @@ public class GUI {
 	    	
 	    	//Between Attributes
 	    	JLabel lb_bwtween_attributes = new JLabel("Search Between Attributes'value");
-	    	lb_bwtween_attributes.setBounds(1000,10,200,50);
-	    	lb_bwtween_attributes.setFont(new Font("Arial", Font.PLAIN, 20));
+	    	lb_bwtween_attributes.setBounds(20,570,500,50);
+	    	lb_bwtween_attributes.setFont(new Font("Arial", Font.PLAIN, 24));
 	    	frame.add(lb_bwtween_attributes);
 	    	
-	    	
+	    	comboBox.setBounds(400,570,200,50);
+	    	frame.add(comboBox);
 	    	//Button Excute Movie Query
 	    	JButton excute_movie_query = new JButton("Excute Movie Query");
 	    	excute_movie_query.setBounds(50, 800, 200, 100);
@@ -323,6 +312,20 @@ public class GUI {
 				
 	      	});
 	    	
+	    	// 添加条目选中状态改变的监听器
+	        comboBox.addItemListener(new ItemListener() {
+	            @Override
+	            public void itemStateChanged(ItemEvent e) {
+	                // 只处理选中的状态
+	                if (e.getStateChange() == ItemEvent.SELECTED) {
+	                	if (comboBox.getSelectedIndex() != 0) {
+	                		 condition[0] = comboBox.getSelectedItem().toString();
+	                	}
+	                    
+	                }
+	            }
+	        });
+	    	
 	   }
 
 		private static DatePicker getDatePicker() {
@@ -348,9 +351,9 @@ public class GUI {
 		    datepick.setBounds(137, 83, 177, 24);
 		    */
 		    // 设置一个月份中需要高亮显示的日子
-		    datepick.setHightlightdays(hilightDays, Color.red);
+		    //datepick.setHightlightdays(hilightDays, Color.red);
 		    // 设置一个月份中不需要的日子，呈灰色显示
-		    datepick.setDisableddays(disabledDays);
+		    //datepick.setDisableddays(disabledDays);
 		    // 设置国家
 		    datepick.setLocale(Locale.US);
 		    // 设置时钟面板可见
