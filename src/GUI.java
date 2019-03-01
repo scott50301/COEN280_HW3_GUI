@@ -84,7 +84,6 @@ public class GUI {
 			  	String country = rs.getString("COUNTRY");
 			  	country = country.trim();
 			  	if (country.length() > 0) {
-			  		System.out.println(country);
 			  		countrydata.add(country);
 			  	}
 			  	
@@ -116,8 +115,8 @@ public class GUI {
 	        // set default value
 	        comboBox.setSelectedIndex(0);
 	        
-	        //
-	        JTextArea jt = new JTextArea(10, 10); 
+	        
+	         
 
 	        
 	    	
@@ -189,11 +188,18 @@ public class GUI {
 	    	
 	    	comboBox.setBounds(400,570,200,50);
 	    	frame.add(comboBox);
+	    	
+	    	
+	    	//sql Result
+	    	JTextArea jt = new JTextArea("Query Result： \n", 10, 10);
+	    	JScrollPane scroll = new JScrollPane(jt); 
+	    	scroll.setBounds(20,650,800,130);
+	    	frame.add(scroll);
+	    	
 	    	//Button Excute Movie Query
 	    	JButton excute_movie_query = new JButton("Excute Movie Query");
 	    	excute_movie_query.setBounds(50, 800, 200, 100);
 	    	frame.add(excute_movie_query);
-	    	
 	    	//frame.pack();
 	    	frame.setVisible(true);
 	    	
@@ -219,13 +225,13 @@ public class GUI {
 								countries+
 								"GROUP BY m.id, m.title "+
 								"ORDER BY m.id ");
-					String query = "SELECT m.id, m.title " + 
-							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m " + 
-							"WHERE mg.movieID = m.id " + 
-							"AND mc.movieID = m.id " + 
-							genres+
-							countries+
-							"GROUP BY m.id, m.title "+
+					String query = "SELECT m.id, m.title \n" + 
+							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m \n" + 
+							"WHERE mg.movieID = m.id \n" + 
+							"AND mc.movieID = m.id \n" + 
+							genres+"\n"+
+							countries+"\n"+
+							"GROUP BY m.id, m.title \n"+
 							"ORDER BY m.id ";
 					try {
 						ResultSet excute_movie_query_rs = con.createStatement().executeQuery(query);
@@ -235,6 +241,10 @@ public class GUI {
 						  	
 						  
 						}
+						Font f = new Font("Serif", Font.BOLD, 20); 
+			            jt.setFont(f);
+			            jt.append(query); 
+						
 						
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
