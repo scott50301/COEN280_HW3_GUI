@@ -1,4 +1,4 @@
-import java.awt.Color;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -107,20 +107,14 @@ public class GUI {
 	    	//================================================= COUNTRY =================================================//
 	    	String[] listData = new String[]{"Select AND,OR","AND", "OR"};
 
-	        // 创建一个下拉列表框
+	        
 	        JComboBox<String> comboBox = new JComboBox<String>(listData);
 	        String[] condition = new String[1];
-	        
+	        condition[0] = "AND";
 
-	        // set default value
 	        comboBox.setSelectedIndex(0);
 	        
 	        
-	         
-
-	        
-	    	
-	    	
 			
 	    	frame.setBounds(100, 100, 1250, 1000);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -176,17 +170,20 @@ public class GUI {
 	    	lb_movie_result.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(lb_movie_result);
 	    	
-	    	JScrollPane movie_result = new JScrollPane();
-	    	movie_result.setBounds(1000, 50, 200, 500);
-	    	frame.add(movie_result);
+	    	JTextArea jt_movie_result = new JTextArea("", 10, 10);
+	    	JScrollPane scroll_movie_result = new JScrollPane(jt_movie_result);
+	    	scroll_movie_result.setBounds(900, 50, 300, 500);
+	    	frame.add(scroll_movie_result);
+	    	
 	    	
 	    	//Between Attributes
-	    	JLabel lb_bwtween_attributes = new JLabel("Search Between Attributes'value");
-	    	lb_bwtween_attributes.setBounds(20,570,500,50);
+	    	JLabel lb_bwtween_attributes = new JLabel("Search Between Attributes'value (Default is AND)");
+	    	lb_bwtween_attributes.setBounds(20,570,600,50);
 	    	lb_bwtween_attributes.setFont(new Font("Arial", Font.PLAIN, 24));
 	    	frame.add(lb_bwtween_attributes);
 	    	
-	    	comboBox.setBounds(400,570,200,50);
+	    	comboBox.setBounds(600,570,200,50);
+	    	comboBox.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(comboBox);
 	    	
 	    	
@@ -211,20 +208,15 @@ public class GUI {
 	    	        //your actions
 	    	    	String genres = "";
 	    	    	String countries = "";
+	    	    	String movie_result = "";
 					for (int i = 0; i < clickedGenre.size(); i++) {		
-						genres += "And mg.GENRE = '"+clickedGenre.get(i)+"' ";
+						genres += "And m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" + 
+								"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
 					}
 					for (int i = 0; i < clickedCountry.size(); i++) {					
 						countries += "And mc.country ='"+clickedCountry.get(i)+"' ";
 					}
-					System.out.println("SELECT m.id, m.title " + 
-								"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m " + 
-								"WHERE mg.movieID = m.id " + 
-								"AND mc.movieID = m.id " + 
-								genres+
-								countries+
-								"GROUP BY m.id, m.title "+
-								"ORDER BY m.id ");
+
 					String query = "SELECT m.id, m.title \n" + 
 							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m \n" + 
 							"WHERE mg.movieID = m.id \n" + 
@@ -233,23 +225,31 @@ public class GUI {
 							countries+"\n"+
 							"GROUP BY m.id, m.title \n"+
 							"ORDER BY m.id ";
+					
 					try {
 						ResultSet excute_movie_query_rs = con.createStatement().executeQuery(query);
 						while (excute_movie_query_rs.next()) {
 						  	String mid = excute_movie_query_rs.getString("ID");
 						  	String title = excute_movie_query_rs.getString("TITLE");
-						  	
+						  	movie_result += mid+"   "+title+"\n"; 
 						  
 						}
 						Font f = new Font("Serif", Font.BOLD, 20); 
+						jt.setText("");
 			            jt.setFont(f);
-			            jt.append(query); 
+			            jt.append(condition[0]+"\n"+query); 
+			            
+			            
+						jt_movie_result.setText("");
+						jt_movie_result.setFont(new Font("Serif", Font.BOLD, 20));
+						jt_movie_result.append(movie_result);
 						
 						
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					
 	    	    }
 	    	});
 	    	
@@ -276,9 +276,7 @@ public class GUI {
 	            		clickedGenre.remove(item.toString());
 	            	}
 	            	
-	            	
-					
-	            	
+
 	            	// Repaint cell
 	 
 					list_genre.repaint(list_genre.getCellBounds(index, index));
@@ -310,9 +308,7 @@ public class GUI {
 	            		clickedCountry.remove(item.toString());
 	            	}
 	            	
-					
-					
-	            	
+
 	            	// Repaint cell
 	 
 	            	list_country.repaint(list_country.getCellBounds(index, index));
@@ -327,9 +323,13 @@ public class GUI {
 	            @Override
 	            public void itemStateChanged(ItemEvent e) {
 	                // 只处理选中的状态
+	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (comboBox.getSelectedIndex() != 0) {
 	                		 condition[0] = comboBox.getSelectedItem().toString();
+	                	}
+	                	else {
+	                		condition[0] = "AND";
 	                	}
 	                    
 	                }
