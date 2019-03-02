@@ -209,9 +209,20 @@ public class GUI {
 	    	    	String genres = "";
 	    	    	String countries = "";
 	    	    	String movie_result = "";
-					for (int i = 0; i < clickedGenre.size(); i++) {		
-						genres += "And m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" + 
+					for (int i = 0; i < clickedGenre.size(); i++) {
+						if (i == 0) {
+							genres += "And ";
+							if (condition[0].equals("OR"))
+								genres += "(";
+							genres += "m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" +
 								"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
+						}
+						else {
+							genres += condition[0]+" m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" + 
+									"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
+							
+						}
+							
 					}
 					for (int i = 0; i < clickedCountry.size(); i++) {					
 						countries += "And mc.country ='"+clickedCountry.get(i)+"' ";
@@ -221,12 +232,14 @@ public class GUI {
 							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m \n" + 
 							"WHERE mg.movieID = m.id \n" + 
 							"AND mc.movieID = m.id \n" + 
-							genres+"\n"+
-							countries+"\n"+
+							genres+"\n";
+					if (condition[0].equals("OR"))
+							query += ")";
+							query += countries+"\n"+
 							"GROUP BY m.id, m.title \n"+
 							"ORDER BY m.id ";
 					
-					try {
+		            try {
 						ResultSet excute_movie_query_rs = con.createStatement().executeQuery(query);
 						while (excute_movie_query_rs.next()) {
 						  	String mid = excute_movie_query_rs.getString("ID");
