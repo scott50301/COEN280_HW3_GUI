@@ -28,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
@@ -80,17 +81,23 @@ public class GUI {
 	    	JCheckBoxList country_checkBoxList = new JCheckBoxList(country_model);
 	    	
 	    	
-	    	//================================================= COUNTRY =================================================//
+	    	//================================================= TAG =================================================//
 	    	List<String> tagdata = new ArrayList<>();
 	    	List<String> clickedTag = new ArrayList<>();
 	    	DefaultListModel<JCheckBox> tag_model = new DefaultListModel<JCheckBox>();
 	    	JCheckBoxList tag_checkBoxList = new JCheckBoxList(tag_model);
 	    	
-	    	//================================================= BETWEEN ATTRIBUTES' VALUE =================================================//
-	    	String[] listData = new String[]{"Select AND,OR","AND", "OR"};
-
+	    	String[] tagsweightlistData = new String[]{"=,>,<", "=", ">", "<"};
+	    	JComboBox<String> tagsweightcomboBox = new JComboBox<String>(tagsweightlistData);
+	        String[] tags_weight = new String[1];
+	        tags_weight[0] = "";
+	        tagsweightcomboBox.setSelectedIndex(0);
 	        
-	        JComboBox<String> comboBox = new JComboBox<String>(listData);
+	        JTextField tagsweighttextField = new JTextField(16); 
+	    	//================================================= BETWEEN ATTRIBUTES' VALUE =================================================//
+	    	String[] attributelistData = new String[]{"Select AND,OR","AND", "OR"};
+	        
+	        JComboBox<String> comboBox = new JComboBox<String>(attributelistData);
 	        String[] condition = new String[1];
 	        condition[0] = "AND";
 
@@ -153,9 +160,20 @@ public class GUI {
 	    	frame.add(lb_tags);
 	    	
 	    	JScrollPane jp_tag = new JScrollPane(tag_checkBoxList);
-	    	jp_tag.setBounds(480, 50, 200, 500);
+	    	jp_tag.setBounds(480, 50, 200, 400);
 	    	frame.add(jp_tag);
 	    	
+	    	JLabel lb_tags_weight = new JLabel("Tags Weigth:");
+	    	lb_tags_weight.setBounds(480,450,200,50);
+	    	lb_tags_weight.setFont(new Font("Arial", Font.PLAIN, 20));
+	    	frame.add(lb_tags_weight);
+	    	
+	    	tagsweightcomboBox.setBounds(480,500,100,30);
+	    	tagsweightcomboBox.setFont(new Font("Arial", Font.PLAIN, 20));
+	    	frame.add(tagsweightcomboBox);
+	    	
+	    	tagsweighttextField.setBounds(590,500,100,30);
+	    	frame.add(tagsweighttextField);
 	    	//Movie Result
 	    	JLabel lb_movie_result = new JLabel("Movie Result");
 	    	lb_movie_result.setBounds(1000,10,200,50);
@@ -250,10 +268,14 @@ public class GUI {
 							"AND mt.movieID = m.id \n"+
 							"AND mt.TAGID = t.id \n"+
 							genres+"\n";
-					if (condition[0].equals("OR"))
-							query += ")";
-							query += countries+"\n"+
-							"GROUP BY m.id, m.title \n"+
+					if (condition[0].equals("OR")) {
+						query += ")";
+					}
+							query += countries+"\n";
+					if (condition[0].equals("OR")) {
+						query += ")";
+					}
+					query +="GROUP BY m.id, m.title \n"+
 							"ORDER BY m.id ";
 							
 					/*
@@ -328,6 +350,8 @@ public class GUI {
 	            		
 	            	}
 	            	country_model.removeAllElements();
+	            	tag_model.removeAllElements();
+	            	clickedCountry.clear();
 	            	if (clickedGenre.size() > 0) {
 		            	genres[0] = "";
 		            	for (int i = 0; i < clickedGenre.size(); i++) {
@@ -416,6 +440,24 @@ public class GUI {
 	            		clickedCountry.remove(item.getLabel());
 	            	}
 	            	tag_model.removeAllElements();
+	            	
+	            	genres[0] = "";
+	            	for (int i = 0; i < clickedGenre.size(); i++) {
+						if (i == 0) {
+							genres[0] += "And ";
+							if (condition[0].equals("OR"))
+								genres[0] += "(";
+							genres[0] += "m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" +
+								"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
+						}
+						else {
+							genres[0] += condition[0]+" m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" + 
+									"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
+							
+						}
+	            	}
+	            	
+	            	
 	            	if (clickedCountry.size() > 0) {
 		            	countires[0] = "";
 		            	for (int i = 0; i < clickedCountry.size(); i++) {
@@ -488,6 +530,40 @@ public class GUI {
 				
 	      	});
 	    	
+	    	
+	    	tag_checkBoxList.addMouseListener(new MouseAdapter() {
+	    		public void mouseClicked(MouseEvent event) {
+	 
+
+	    			JCheckBoxList list_tag = (JCheckBoxList) event.getSource();
+	    			//JList<CheckboxListItem> list_genre = (JList<CheckboxListItem>) event.getSource();
+	    			
+	    			
+	    			// Get index of item clicked
+	 
+	            	int index = list_tag.locationToIndex(event.getPoint());
+	            	JCheckBox item = list_tag.getModel().getElementAt(index);
+	 
+	            	// Toggle selected state
+	 
+	            	item.setSelected(!item.isSelected());
+	            	
+	            	if (item.isSelected()) {
+	            		clickedTag.add(item.getLabel());
+	            	}
+	            	else {
+	            		clickedTag.remove(item.getLabel());
+	            	}
+	            	
+
+	            	// Repaint cell
+	 
+	            	list_tag.repaint(list_tag.getCellBounds(index, index));
+	            	
+	            	
+	    		}
+				
+	      	});
 	    	// 添加条目选中状态改变的监听器
 	        comboBox.addItemListener(new ItemListener() {
 	            @Override
@@ -497,6 +573,7 @@ public class GUI {
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (comboBox.getSelectedIndex() != 0) {
 	                		 condition[0] = comboBox.getSelectedItem().toString();
+	                		 System.out.println(condition[0]);
 	                	}
 	                	else {
 	                		condition[0] = "AND";
