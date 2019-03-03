@@ -176,9 +176,19 @@ public class GUI {
 	    	
 	    	JTextArea jt_movie_result = new JTextArea("", 10, 10);
 	    	JScrollPane scroll_movie_result = new JScrollPane(jt_movie_result);
-	    	scroll_movie_result.setBounds(900, 50, 300, 500);
+	    	scroll_movie_result.setBounds(900, 50, 300, 400);
 	    	frame.add(scroll_movie_result);
 	    	
+	    	//User Result
+	    	JLabel lb_user_result = new JLabel("User Result");
+	    	lb_user_result.setBounds(1000,450,200,50);
+	    	lb_user_result.setFont(new Font("Arial", Font.PLAIN, 20));
+	    	frame.add(lb_user_result);
+	    	
+	    	JTextArea jt_user_result = new JTextArea("", 10, 10);
+	    	JScrollPane scroll_user_result = new JScrollPane(jt_user_result);
+	    	scroll_user_result.setBounds(900, 500, 300, 400);
+	    	frame.add(scroll_user_result);
 	    	
 	    	//Between Attributes
 	    	JLabel lb_bwtween_attributes = new JLabel("Search Between Attributes'value (Default is AND)");
@@ -322,33 +332,33 @@ public class GUI {
 							query += "GROUP BY mc.country \n"+
 							"ORDER BY mc.country ";
 	            	
-					System.out.println(query);
+					
 						
-						try {
-							ResultSet GetCountries = con.createStatement().executeQuery(query);
-							countrydata.clear();
-							while (GetCountries.next()) {
-							  	String country = GetCountries.getString("COUNTRY");
-							  	country = country.trim();
-							  	if (country.length() > 0) {
-							  		countrydata.add(country);
-							  	}
-							}
-							
-							country_model.removeAllElements();
-							
-							//jp_country.revalidate();
-							//country_checkBoxList.revalidate();
-							
-							for (String country : countrydata) {
-								country_model.addElement(new JCheckBox(country));
-							}
-							
-							
-						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+					try {
+						ResultSet GetCountries = con.createStatement().executeQuery(query);
+						countrydata.clear();
+						while (GetCountries.next()) {
+						  	String country = GetCountries.getString("COUNTRY");
+						  	country = country.trim();
+						  	if (country.length() > 0) {
+						  		countrydata.add(country);
+						  	}
 						}
+						
+						country_model.removeAllElements();
+						
+						//jp_country.revalidate();
+						//country_checkBoxList.revalidate();
+						
+						for (String country : countrydata) {
+							country_model.addElement(new JCheckBox(country));
+						}
+						
+						
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 	            	// Repaint cell
 	 
@@ -362,13 +372,18 @@ public class GUI {
 	    	country_checkBoxList.addMouseListener(new MouseAdapter() {
 	    		public void mouseClicked(MouseEvent event) {
 	 
-	    			JList<CheckboxListItem> list_country = (JList<CheckboxListItem>) event.getSource();
+	    			
+	    			
+	    			
+	    			
+	    			JCheckBoxList list_country = (JCheckBoxList) event.getSource();
+	    			//JList<CheckboxListItem> list_genre = (JList<CheckboxListItem>) event.getSource();
 	    			
 	    			
 	    			// Get index of item clicked
 	 
 	            	int index = list_country.locationToIndex(event.getPoint());
-	            	CheckboxListItem item = (CheckboxListItem) list_country.getModel().getElementAt(index);
+	            	JCheckBox item = list_country.getModel().getElementAt(index);
 	 
 	            	// Toggle selected state
 	 
@@ -380,6 +395,9 @@ public class GUI {
 	            	else {
 	            		clickedCountry.remove(item.toString());
 	            	}
+	    			
+	    			
+	    			
 	            	
 	            	
 
