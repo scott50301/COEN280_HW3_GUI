@@ -168,6 +168,16 @@ public class GUI {
 	    	jp_country.setBounds(250, 50, 200, 500);
 	    	frame.add(jp_country);
 	    	
+	    	//Tags
+	    	JLabel lb_tags = new JLabel("Tags Ids and Values");
+	    	lb_tags.setBounds(500,10,100,50);
+	    	lb_tags.setFont(new Font("Arial", Font.PLAIN, 20));
+	    	frame.add(lb_tags);
+	    	
+	    	JScrollPane jp_tag = new JScrollPane(country_checkBoxList);
+	    	jp_tag.setBounds(250, 50, 200, 500);
+	    	frame.add(jp_tag);
+	    	
 	    	//Movie Result
 	    	JLabel lb_movie_result = new JLabel("Movie Result");
 	    	lb_movie_result.setBounds(1000,10,200,50);
