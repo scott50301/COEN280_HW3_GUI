@@ -209,7 +209,7 @@ public class GUI {
 	    	    public void actionPerformed(ActionEvent e) {
 	    	        //your actions
 	    	    	//String genres = "";
-	    	    	String countries = "";
+
 	    	    	String movie_result = "";
 /*
 					for (int i = 0; i < clickedGenre.size(); i++) {
@@ -228,9 +228,7 @@ public class GUI {
 							
 					}
 					*/
-					for (int i = 0; i < clickedCountry.size(); i++) {					
-						countries += "And mc.country ='"+clickedCountry.get(i)+"' ";
-					}
+				
 /*
 					String query = "SELECT m.id, m.title \n" + 
 							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m \n" + 
@@ -264,15 +262,15 @@ public class GUI {
 		            try {
 						ResultSet excute_movie_query_rs = con.createStatement().executeQuery(query);
 						while (excute_movie_query_rs.next()) {
-						  	String mid = excute_movie_query_rs.getString("ID");
-						  	String title = excute_movie_query_rs.getString("TITLE");
+						  	String mid = excute_movie_query_rs.getString("id");
+						  	String title = excute_movie_query_rs.getString("title");
 						  	movie_result += mid+"   "+title+"\n"; 
 						  
 						}
 						Font f = new Font("Serif", Font.BOLD, 20); 
 						jt.setText("");
 			            jt.setFont(f);
-			            jt.append(condition[0]+"\n"+query); 
+			            jt.append(query); 
 			            
 			            
 						jt_movie_result.setText("");
