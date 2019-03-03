@@ -231,7 +231,7 @@ public class GUI {
 					for (int i = 0; i < clickedCountry.size(); i++) {					
 						countries += "And mc.country ='"+clickedCountry.get(i)+"' ";
 					}
-
+/*
 					String query = "SELECT m.id, m.title \n" + 
 							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m \n" + 
 							"WHERE mg.movieID = m.id \n" + 
@@ -241,6 +241,24 @@ public class GUI {
 							query += ")";
 							query += countries+"\n"+
 							"GROUP BY m.id, m.title \n"+
+							"ORDER BY m.id ";
+							*/
+					String query = "SELECT m.id, m.title \n" + 
+							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m, TAGS t, MOVIE_TAGS mt \n" + 
+							"WHERE mg.movieID = m.id \n" + 
+							"AND mc.movieID = m.id \n" + 
+							"AND mt.movieID = m.id \n"+
+							"AND mt.TAGID = t.id \n"+
+							genres[0]+"\n";
+					if (condition[0].equals("OR")) {
+							query += ")";
+					}
+							
+					query += countires[0]+"\n";
+					if (condition[0].equals("OR")) {
+						query += ")";	
+					}	
+					query += "GROUP BY m.id, m.title \n"+
 							"ORDER BY m.id ";
 					
 		            try {
@@ -413,8 +431,7 @@ public class GUI {
 							query += countires[0]+"\n";
 					if (condition[0].equals("OR")) {
 							query += ")";	
-					}
-								
+					}	
 							query += "GROUP BY t.id, t.value \n"+
 							"ORDER BY t.id ";
 							
