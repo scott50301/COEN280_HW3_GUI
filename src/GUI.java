@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -28,13 +29,17 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 
 import com.eltima.components.ui.DatePicker;
 
 public class GUI {
 
-	
+	//static JList<CheckboxListItem> countrylist;
 	public static void main(String [ ] args) throws SQLException{
 			
 			Connection con = DriverManager.getConnection( "jdbc:oracle:thin:@localhost:1521:scott50301","system","csk820814");  
@@ -58,43 +63,42 @@ public class GUI {
 			  	genredata.add(genre);
 			  
 			}
-	    	CheckboxListItem[] genrecheckboxlist = new CheckboxListItem[genredata.size()];
-	    	int index = 0;
+	    	DefaultListModel<JCheckBox> genremodel = new DefaultListModel<JCheckBox>();
+	    	JCheckBoxList genrecheckBoxList = new JCheckBoxList(genremodel);
+	    
 	    	for(String s : genredata) {
-	    		genrecheckboxlist[index++] = new CheckboxListItem(s);
+	    		genremodel.addElement(new JCheckBox(s));
 	    	}
-	  
-	    	JList<CheckboxListItem> genrelist = new JList<CheckboxListItem>(genrecheckboxlist);
-	    	
-	      	// Use a CheckboxListRenderer (see below)
-	      	// to renderer list cells
-	 
-	    	genrelist.setCellRenderer(new CheckboxListRenderer());
-	    	genrelist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	 
-	      	// Add a mouse listener to handle changing selection
 	    
 	    	
 	    	//================================================= COUNTRY =================================================//
+	    	List<String> countrydata = new ArrayList<>();
+	    	List<String> clickedCountry = new ArrayList<>();
+	    	DefaultListModel<JCheckBox> country_model = new DefaultListModel<JCheckBox>();
+	    	JCheckBoxList country_checkBoxList = new JCheckBoxList(country_model);
+	    	/*
 	    	query = "SELECT COUNTRY FROM MOVIE_COUNTRIES GROUP BY COUNTRY ORDER BY COUNTRY";
 	    	rs = stmt.executeQuery(query);
 	    	List<String> countrydata = new ArrayList<>();
 	    	List<String> clickedCountry = new ArrayList<>();
+	    	
 	    	while (rs.next()) {
 			  	String country = rs.getString("COUNTRY");
 			  	country = country.trim();
 			  	if (country.length() > 0) {
 			  		countrydata.add(country);
 			  	}
-			  	
-			  
+			 
 			}
-	    	CheckboxListItem[] countrycheckboxlist = new CheckboxListItem[countrydata.size()];
+			
+	    	
 	    	index = 0;
+	    	CheckboxListItem[] countrycheckboxlist = new CheckboxListItem[countrydata.size()];
+	    	
 	    	for(String s : countrydata) {
 	    		countrycheckboxlist[index++] = new CheckboxListItem(s);
 	    	}
-	  
+	    	 
 	    	JList<CheckboxListItem> countrylist = new JList<CheckboxListItem>(countrycheckboxlist);
 	    	
 	      	// Use a CheckboxListRenderer (see below)
@@ -102,9 +106,9 @@ public class GUI {
 	 
 	    	countrylist.setCellRenderer(new CheckboxListRenderer());
 	    	countrylist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	 
+	    	*/
 	    	
-	    	//================================================= COUNTRY =================================================//
+	    	//================================================= BETWEEN ATTRIBUTES' VALUE =================================================//
 	    	String[] listData = new String[]{"Select AND,OR","AND", "OR"};
 
 	        
@@ -126,7 +130,7 @@ public class GUI {
 	    	lb_genre.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(lb_genre);
 	    	
-	    	JScrollPane jp_genre = new JScrollPane(genrelist);
+	    	JScrollPane jp_genre = new JScrollPane(genrecheckBoxList);
 	    	jp_genre.setBounds(20, 50, 200, 350);
 	    	frame.add(jp_genre);
 	    	
@@ -160,7 +164,7 @@ public class GUI {
 	    	lb_country.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(lb_country);
 	    	
-	    	JScrollPane jp_country = new JScrollPane(countrylist);
+	    	JScrollPane jp_country = new JScrollPane(country_checkBoxList);
 	    	jp_country.setBounds(250, 50, 200, 500);
 	    	frame.add(jp_country);
 	    	
@@ -267,29 +271,85 @@ public class GUI {
 	    	});
 	    	
 	    	
-	    	genrelist.addMouseListener(new MouseAdapter() {
+	    	genrecheckBoxList.addMouseListener(new MouseAdapter() {
 	    		public void mouseClicked(MouseEvent event) {
 	 
-	    			JList<CheckboxListItem> list_genre = (JList<CheckboxListItem>) event.getSource();
+	    			JCheckBoxList list_genre = (JCheckBoxList) event.getSource();
+	    			//JList<CheckboxListItem> list_genre = (JList<CheckboxListItem>) event.getSource();
 	    			
 	    			
 	    			// Get index of item clicked
 	 
 	            	int index = list_genre.locationToIndex(event.getPoint());
-	            	CheckboxListItem item = (CheckboxListItem) list_genre.getModel().getElementAt(index);
+	            	JCheckBox item = list_genre.getModel().getElementAt(index);
 	 
 	            	// Toggle selected state
 	 
 	            	item.setSelected(!item.isSelected());
 	            	
 	            	if (item.isSelected()) {
-	            		clickedGenre.add(item.toString());
+	            		clickedGenre.add(item.getLabel());
+	            		
 	            	}
 	            	else {
-	            		clickedGenre.remove(item.toString());
+	            		clickedGenre.remove(item.getLabel());
+	            		
 	            	}
 	            	
-
+	            	String genres = "";
+	            	for (int i = 0; i < clickedGenre.size(); i++) {
+						if (i == 0) {
+							genres += "And ";
+							if (condition[0].equals("OR"))
+								genres += "(";
+							genres += "m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" +
+								"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
+						}
+						else {
+							genres += condition[0]+" m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" + 
+									"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
+							
+						}
+							
+					}
+	            	String query = "SELECT mc.country \n" + 
+							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m \n" + 
+							"WHERE mg.movieID = m.id \n" + 
+							"AND mc.movieID = m.id \n" + 
+							genres+"\n";
+					if (condition[0].equals("OR"))
+							query += ")";
+							query += "GROUP BY mc.country \n"+
+							"ORDER BY mc.country ";
+	            	
+					System.out.println(query);
+						
+						try {
+							ResultSet GetCountries = con.createStatement().executeQuery(query);
+							countrydata.clear();
+							while (GetCountries.next()) {
+							  	String country = GetCountries.getString("COUNTRY");
+							  	country = country.trim();
+							  	if (country.length() > 0) {
+							  		countrydata.add(country);
+							  	}
+							}
+							
+							country_model.removeAllElements();
+							
+							//jp_country.revalidate();
+							//country_checkBoxList.revalidate();
+							
+							for (String country : countrydata) {
+								country_model.addElement(new JCheckBox(country));
+							}
+							
+							
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					
 	            	// Repaint cell
 	 
 					list_genre.repaint(list_genre.getCellBounds(index, index));
@@ -299,7 +359,7 @@ public class GUI {
 				
 	      	});
 	    	
-	    	countrylist.addMouseListener(new MouseAdapter() {
+	    	country_checkBoxList.addMouseListener(new MouseAdapter() {
 	    		public void mouseClicked(MouseEvent event) {
 	 
 	    			JList<CheckboxListItem> list_country = (JList<CheckboxListItem>) event.getSource();
@@ -320,6 +380,7 @@ public class GUI {
 	            	else {
 	            		clickedCountry.remove(item.toString());
 	            	}
+	            	
 	            	
 
 	            	// Repaint cell
@@ -385,7 +446,69 @@ public class GUI {
 		}
 	}
 	 
+	class JCheckBoxList extends JList<JCheckBox> {
+	  protected static Border noFocusBorder = new EmptyBorder(1, 1, 1, 1);
+	  public JCheckBoxList() {
+	    setCellRenderer(new CellRenderer());
+	    addMouseListener(new MouseAdapter() {
+	      public void mousePressed(MouseEvent e) {
+	        int index = locationToIndex(e.getPoint());
+	        /*
+	        if (index != -1) {
+	          JCheckBox checkbox = (JCheckBox) getModel().getElementAt(index);
+	          checkbox.setSelected(!checkbox.isSelected());
+	          repaint();
+	        }
+	        */
+	      }
+	    });
+	    
+	    setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	  }
+	  private String label;
+	  public JCheckBoxList(ListModel<JCheckBox> model){
+	    this();
+	    setModel(model);
+	    
+	  }
+	  private boolean isSelected = false;
+		 
+	  
+	 
+	   public boolean isSelected() {
+	      return isSelected;
+	   }
+	 
+	   public void setSelected(boolean isSelected) {
+	      this.isSelected = isSelected;
+	   }
+	 
+	   public String toString() {
+	      return label;
+	   }
+	
+	 
+	 
+	  protected class CellRenderer implements ListCellRenderer<JCheckBox> {
+	    public Component getListCellRendererComponent(
+	        JList<? extends JCheckBox> list, JCheckBox value, int index,
+	        boolean isSelected, boolean cellHasFocus) {
+	      JCheckBox checkbox = value;
 
+	      //Drawing checkbox, change the appearance here
+	      checkbox.setBackground(isSelected ? getSelectionBackground()
+	          : getBackground());
+	      checkbox.setForeground(isSelected ? getSelectionForeground()
+	          : getForeground());
+	      checkbox.setEnabled(isEnabled());
+	      checkbox.setFont(getFont());
+	      checkbox.setFocusPainted(false);
+	      checkbox.setBorderPainted(true);
+	      checkbox.setBorder(isSelected ? UIManager.getBorder("List.focusCellHighlightBorder") : noFocusBorder);
+	      return checkbox;
+	    }
+	  }
+	}
 
 
 	// Represents items in the list that can be selected
