@@ -58,6 +58,7 @@ public class GUI {
 	    	//================================================= GENRE =================================================//
 	    	List<String> genredata = new ArrayList<>();
 	    	List<String> clickedGenre = new ArrayList<>();
+	    	String[] genres = new String[1];
 	    	while (rs.next()) {
 			  	String genre = rs.getString("GENRE");
 			  	genredata.add(genre);
@@ -74,39 +75,16 @@ public class GUI {
 	    	//================================================= COUNTRY =================================================//
 	    	List<String> countrydata = new ArrayList<>();
 	    	List<String> clickedCountry = new ArrayList<>();
+	    	String[] countires = new String[1];
 	    	DefaultListModel<JCheckBox> country_model = new DefaultListModel<JCheckBox>();
 	    	JCheckBoxList country_checkBoxList = new JCheckBoxList(country_model);
-	    	/*
-	    	query = "SELECT COUNTRY FROM MOVIE_COUNTRIES GROUP BY COUNTRY ORDER BY COUNTRY";
-	    	rs = stmt.executeQuery(query);
-	    	List<String> countrydata = new ArrayList<>();
-	    	List<String> clickedCountry = new ArrayList<>();
 	    	
-	    	while (rs.next()) {
-			  	String country = rs.getString("COUNTRY");
-			  	country = country.trim();
-			  	if (country.length() > 0) {
-			  		countrydata.add(country);
-			  	}
-			 
-			}
-			
 	    	
-	    	index = 0;
-	    	CheckboxListItem[] countrycheckboxlist = new CheckboxListItem[countrydata.size()];
-	    	
-	    	for(String s : countrydata) {
-	    		countrycheckboxlist[index++] = new CheckboxListItem(s);
-	    	}
-	    	 
-	    	JList<CheckboxListItem> countrylist = new JList<CheckboxListItem>(countrycheckboxlist);
-	    	
-	      	// Use a CheckboxListRenderer (see below)
-	      	// to renderer list cells
-	 
-	    	countrylist.setCellRenderer(new CheckboxListRenderer());
-	    	countrylist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	    	*/
+	    	//================================================= COUNTRY =================================================//
+	    	List<String> tagdata = new ArrayList<>();
+	    	List<String> clickedTag = new ArrayList<>();
+	    	DefaultListModel<JCheckBox> tag_model = new DefaultListModel<JCheckBox>();
+	    	JCheckBoxList tag_checkBoxList = new JCheckBoxList(tag_model);
 	    	
 	    	//================================================= BETWEEN ATTRIBUTES' VALUE =================================================//
 	    	String[] listData = new String[]{"Select AND,OR","AND", "OR"};
@@ -170,12 +148,12 @@ public class GUI {
 	    	
 	    	//Tags
 	    	JLabel lb_tags = new JLabel("Tags Ids and Values");
-	    	lb_tags.setBounds(500,10,100,50);
+	    	lb_tags.setBounds(480,10,200,50);
 	    	lb_tags.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(lb_tags);
 	    	
-	    	JScrollPane jp_tag = new JScrollPane(country_checkBoxList);
-	    	jp_tag.setBounds(250, 50, 200, 500);
+	    	JScrollPane jp_tag = new JScrollPane(tag_checkBoxList);
+	    	jp_tag.setBounds(480, 50, 200, 500);
 	    	frame.add(jp_tag);
 	    	
 	    	//Movie Result
@@ -230,9 +208,10 @@ public class GUI {
 	    	    @Override
 	    	    public void actionPerformed(ActionEvent e) {
 	    	        //your actions
-	    	    	String genres = "";
+	    	    	//String genres = "";
 	    	    	String countries = "";
 	    	    	String movie_result = "";
+/*
 					for (int i = 0; i < clickedGenre.size(); i++) {
 						if (i == 0) {
 							genres += "And ";
@@ -248,6 +227,7 @@ public class GUI {
 						}
 							
 					}
+					*/
 					for (int i = 0; i < clickedCountry.size(); i++) {					
 						countries += "And mc.country ='"+clickedCountry.get(i)+"' ";
 					}
@@ -256,7 +236,7 @@ public class GUI {
 							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m \n" + 
 							"WHERE mg.movieID = m.id \n" + 
 							"AND mc.movieID = m.id \n" + 
-							genres+"\n";
+							genres[0]+"\n";
 					if (condition[0].equals("OR"))
 							query += ")";
 							query += countries+"\n"+
@@ -316,17 +296,17 @@ public class GUI {
 	            		
 	            	}
 	            	
-	            	String genres = "";
+	            	genres[0] = "";
 	            	for (int i = 0; i < clickedGenre.size(); i++) {
 						if (i == 0) {
-							genres += "And ";
+							genres[0] += "And ";
 							if (condition[0].equals("OR"))
-								genres += "(";
-							genres += "m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" +
+								genres[0] += "(";
+							genres[0] += "m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" +
 								"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
 						}
 						else {
-							genres += condition[0]+" m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" + 
+							genres[0] += condition[0]+" m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" + 
 									"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
 							
 						}
@@ -336,7 +316,7 @@ public class GUI {
 							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m \n" + 
 							"WHERE mg.movieID = m.id \n" + 
 							"AND mc.movieID = m.id \n" + 
-							genres+"\n";
+							genres[0]+"\n";
 					if (condition[0].equals("OR"))
 							query += ")";
 							query += "GROUP BY mc.country \n"+
@@ -382,10 +362,7 @@ public class GUI {
 	    	country_checkBoxList.addMouseListener(new MouseAdapter() {
 	    		public void mouseClicked(MouseEvent event) {
 	 
-	    			
-	    			
-	    			
-	    			
+
 	    			JCheckBoxList list_country = (JCheckBoxList) event.getSource();
 	    			//JList<CheckboxListItem> list_genre = (JList<CheckboxListItem>) event.getSource();
 	    			
@@ -400,14 +377,72 @@ public class GUI {
 	            	item.setSelected(!item.isSelected());
 	            	
 	            	if (item.isSelected()) {
-	            		clickedCountry.add(item.toString());
+	            		clickedCountry.add(item.getLabel());
 	            	}
 	            	else {
-	            		clickedCountry.remove(item.toString());
+	            		clickedCountry.remove(item.getLabel());
 	            	}
 	    			
-	    			
-	    			
+	            	countires[0] = "";
+	            	for (int i = 0; i < clickedCountry.size(); i++) {
+						if (i == 0) {
+							countires[0] += "And ";
+							if (condition[0].equals("OR"))
+								countires[0] += "(";
+							countires[0] += " m.id in (Select m.id from MOVIE_COUNTRIES mc, MOVIE m WHERE mc.movieID = m.id  \r\n" +
+								"And mc.COUNTRY =  '"+clickedCountry.get(i)+"') ";
+						}
+						else {
+							countires[0] += condition[0]+" m.id in (Select m.id from MOVIE_COUNTRIES mc, MOVIE m WHERE mc.movieID = m.id  \r\n" + 
+									"And mc.COUNTRY =  '"+clickedCountry.get(i)+"') ";
+							
+						}
+	            	}
+						
+	            	String query = "SELECT t.id, t.value \n" + 
+							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m, TAGS t, MOVIE_TAGS mt \n" + 
+							"WHERE mg.movieID = m.id \n" + 
+							"AND mc.movieID = m.id \n" + 
+							"AND mt.movieID = m.id \n"+
+							"AND mt.TAGID = t.id \n"+
+							genres[0]+"\n";
+					if (condition[0].equals("OR")) {
+							query += ")";
+					}
+							
+							query += countires[0]+"\n";
+					if (condition[0].equals("OR")) {
+							query += ")";	
+					}
+								
+							query += "GROUP BY t.id, t.value \n"+
+							"ORDER BY t.id ";
+							
+					try {
+						ResultSet GetTags = con.createStatement().executeQuery(query);
+						tagdata.clear();
+						while (GetTags.next()) {
+						  	String tagid = GetTags.getString("id");
+						  	String tagvalue = GetTags.getString("value");
+						  	
+						  	tagdata.add(tagid+"  "+tagvalue);
+						  	
+						}
+						
+						tag_model.removeAllElements();
+						
+						//jp_country.revalidate();
+						//country_checkBoxList.revalidate();
+						
+						for (String tag : tagdata) {
+							tag_model.addElement(new JCheckBox(tag));
+						}
+						
+						
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 	            	
 	            	
 
