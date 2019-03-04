@@ -353,19 +353,19 @@ public class GUI {
 									"AND mt.TAGID = t.id \n"+
 									genres;
 					
-					if (condition[0].equals("OR")) {
+					if (condition[0].equals("OR") && genres.length() > 0) {
 							query += ") \n";
 					}
 					
 							query += countries;
 							
-					if (condition[0].equals("OR")) {
+					if (condition[0].equals("OR") && countries.length() > 0) {
 							query += ") \n";
 					}
 					
 							query += tags;
 							
-					if (condition[0].equals("OR")) {
+					if (condition[0].equals("OR") && tags.length() > 0) {
 							query += ") \n";
 					}
 					
@@ -373,8 +373,21 @@ public class GUI {
 							query += tagsweights;
 					}
 					
+					if (clickedGenre.size() > 0) {
+							query += "AND mg.genre in ("; 
+							for (int i = 0; i < clickedGenre.size(); i++) {
+								if (i == clickedGenre.size() - 1) {
+									query += "'"+clickedGenre.get(i)+"') \n";
+								}
+								else {
+									query += "'"+clickedGenre.get(i)+"', ";
+								}
+								
+							}
+					}
 							query += "GROUP BY m.id, m.title , m.year, m.rtAudienceRating,m. rtAudienceNumRatings, mg.genre, mc.country \n"+
 									 "ORDER BY m.id ";
+							System.out.println(query);
 							
 		            try {
 						ResultSet excute_movie_query_rs = con.createStatement().executeQuery(query);
@@ -606,7 +619,7 @@ public class GUI {
 								}	
 								query2 += "GROUP BY ma.actorName \n" + 
 								"ORDER BY ma.actorName ";
-								System.out.println(query2);
+								//System.out.println(query2);
 						try {
 							ResultSet GetTags = con.createStatement().executeQuery(query);
 							ResultSet GetActors = con.createStatement().executeQuery(query2);
