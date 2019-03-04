@@ -110,7 +110,7 @@ public class GUI {
 	    	DefaultListModel<JCheckBox> movieresult_model = new DefaultListModel<JCheckBox>();
 	    	JCheckBoxList movieresult_checkBoxList = new JCheckBoxList(movieresult_model);
 			
-	    	frame.setBounds(100, 50, 1250, 1000);
+	    	frame.setBounds(100, 50, 1350, 1000);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    	//frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 	    	
@@ -193,7 +193,7 @@ public class GUI {
 	    	
 	    	JTextArea jt_movie_result = new JTextArea("", 10, 10);
 	    	JScrollPane scroll_movie_result = new JScrollPane(jt_movie_result);
-	    	scroll_movie_result.setBounds(920, 50, 300, 400);
+	    	scroll_movie_result.setBounds(920, 50, 400, 400);
 	    	frame.add(scroll_movie_result);
 	    	
 	    	
@@ -205,7 +205,7 @@ public class GUI {
 	    	
 	    	JTextArea jt_user_result = new JTextArea("", 10, 10);
 	    	JScrollPane scroll_user_result = new JScrollPane(jt_user_result);
-	    	scroll_user_result.setBounds(920, 500, 300, 400);
+	    	scroll_user_result.setBounds(920, 500, 400, 400);
 	    	frame.add(scroll_user_result);
 	    	
 	    	//Between Attributes
@@ -305,8 +305,8 @@ public class GUI {
 					//date
 					
 					//Built query string
-					String query = "SELECT m.id, m.title \n" + 
-							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m, TAGS t, MOVIE_TAGS mt \n" + 
+					String query = "SELECT m.id, m.title , m.year, m.rtAudienceRating,m. rtAudienceNumRatings, mg.genre, mc.country \n" + 
+							"FROM MOVIE m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, TAGS t, MOVIE_TAGS mt \n" + 
 							"WHERE mg.movieID = m.id \n" + 
 							"AND mc.movieID = m.id \n" + 
 							"AND mt.movieID = m.id \n"+
@@ -326,7 +326,7 @@ public class GUI {
 					if (tagsweights.length() > 0) {
 						query += tagsweights;
 					}
-					query +="GROUP BY m.id, m.title \n"+
+					query +="GROUP BY m.id, m.title , m.year, m.rtAudienceRating,m. rtAudienceNumRatings, mg.genre, mc.country \n"+
 							"ORDER BY m.id ";
 							
 		            try {
@@ -334,7 +334,12 @@ public class GUI {
 						while (excute_movie_query_rs.next()) {
 						  	String mid = excute_movie_query_rs.getString("id");
 						  	String title = excute_movie_query_rs.getString("title");
-						  	movie_result += mid+"   "+title+"\n"; 
+						  	String year = excute_movie_query_rs.getString("year");
+						  	String genre = excute_movie_query_rs.getString("genre");
+						  	String country = excute_movie_query_rs.getString("country");
+						  	String rtAudienceRating = excute_movie_query_rs.getString("rtAudienceRating");
+						  	String rtAudienceNumRatings = excute_movie_query_rs.getString("rtAudienceNumRatings");
+						  	movie_result += mid+", "+title+", "+genre+", "+year+", "+country+", "+rtAudienceRating+", "+rtAudienceNumRatings+"\n"; 
 						  
 						}
 						Font f = new Font("Serif", Font.BOLD, 20); 
@@ -523,6 +528,7 @@ public class GUI {
 						}	
 								query += "GROUP BY t.id, t.value \n"+
 								"ORDER BY t.id ";
+								System.out.println(query);
 								
 						try {
 							ResultSet GetTags = con.createStatement().executeQuery(query);
