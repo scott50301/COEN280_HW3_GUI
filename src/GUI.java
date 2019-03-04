@@ -105,7 +105,7 @@ public class GUI {
 	        
 	        
 			
-	    	frame.setBounds(100, 100, 1250, 1000);
+	    	frame.setBounds(100, 50, 1250, 1000);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    	//frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 	    	
@@ -172,28 +172,28 @@ public class GUI {
 	    	tagsweightcomboBox.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(tagsweightcomboBox);
 	    	
-	    	tagsweighttextField.setBounds(590,500,100,30);
+	    	tagsweighttextField.setBounds(585,500,95,30);
 	    	frame.add(tagsweighttextField);
 	    	//Movie Result
 	    	JLabel lb_movie_result = new JLabel("Movie Result");
-	    	lb_movie_result.setBounds(1000,10,200,50);
+	    	lb_movie_result.setBounds(1020,10,200,50);
 	    	lb_movie_result.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(lb_movie_result);
 	    	
 	    	JTextArea jt_movie_result = new JTextArea("", 10, 10);
 	    	JScrollPane scroll_movie_result = new JScrollPane(jt_movie_result);
-	    	scroll_movie_result.setBounds(900, 50, 300, 400);
+	    	scroll_movie_result.setBounds(920, 50, 300, 400);
 	    	frame.add(scroll_movie_result);
 	    	
 	    	//User Result
 	    	JLabel lb_user_result = new JLabel("User Result");
-	    	lb_user_result.setBounds(1000,450,200,50);
+	    	lb_user_result.setBounds(1020,450,200,50);
 	    	lb_user_result.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(lb_user_result);
 	    	
 	    	JTextArea jt_user_result = new JTextArea("", 10, 10);
 	    	JScrollPane scroll_user_result = new JScrollPane(jt_user_result);
-	    	scroll_user_result.setBounds(900, 500, 300, 400);
+	    	scroll_user_result.setBounds(920, 500, 300, 400);
 	    	frame.add(scroll_user_result);
 	    	
 	    	//Between Attributes
@@ -215,8 +215,15 @@ public class GUI {
 	    	
 	    	//Button Excute Movie Query
 	    	JButton excute_movie_query = new JButton("Excute Movie Query");
-	    	excute_movie_query.setBounds(50, 800, 200, 100);
+	    	excute_movie_query.setBounds(100, 800, 200, 100);
 	    	frame.add(excute_movie_query);
+	    	
+	    	
+	    	//Button Excute User Query
+	    	JButton excute_user_query = new JButton("Excute User Query");
+	    	excute_user_query.setBounds(500, 800, 200, 100);
+	    	frame.add(excute_user_query);
+	    	
 	    	//frame.pack();
 	    	frame.setVisible(true);
 	    	
@@ -231,6 +238,8 @@ public class GUI {
 	    	    	String tags = "";
 	    	    	String tagsweights = "";
 	    	    	String movie_result = "";
+	    	    	String startdate = "";
+	    	    	String enddate = "";
 	    	    	
 
 	    	    	//genres
@@ -280,6 +289,9 @@ public class GUI {
 					if (tagsweighttextField.getText().trim().length() > 0){
 						tagsweights += "AND mt.tagWeight " + tags_weight[0] + " "+ tagsweighttextField.getText() + " \n";
 	    			}
+					
+					//date
+					
 					//Built query string
 					String query = "SELECT m.id, m.title \n" + 
 							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m, TAGS t, MOVIE_TAGS mt \n" + 
@@ -609,7 +621,7 @@ public class GUI {
 		    // 格式
 		    String DefaultFormat = "yyyy-MM-dd HH:mm:ss";
 		    // 当前时间
-		    Date date = new Date();
+		    Date date = null;
 		    // 字体
 		    Font font = new Font("Times New Roman", Font.BOLD, 14);
 		
