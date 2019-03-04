@@ -80,7 +80,12 @@ public class GUI {
 	    	DefaultListModel<JCheckBox> country_model = new DefaultListModel<JCheckBox>();
 	    	JCheckBoxList country_checkBoxList = new JCheckBoxList(country_model);
 	    	
-	    	
+	    	//================================================= CAST =================================================//
+	    	JTextField actor1textField = new JTextField(100); 
+	    	JTextField actor2textField = new JTextField(100); 
+	    	JTextField actor3textField = new JTextField(100); 
+	    	JTextField actor4textField = new JTextField(100);
+	    	JTextField directortextField = new JTextField(100); 
 	    	//================================================= TAG =================================================//
 	    	List<String> tagdata = new ArrayList<>();
 	    	List<String> clickedTag = new ArrayList<>();
@@ -158,27 +163,58 @@ public class GUI {
 	    	jp_country.setBounds(250, 50, 200, 500);
 	    	frame.add(jp_country);
 	    	
+	    	//Cast
+	    	JLabel lb_casts = new JLabel("Cast");
+	    	lb_casts.setBounds(470,10,200,50);
+	    	lb_casts.setFont(new Font("Arial", Font.PLAIN, 20));
+	    	frame.add(lb_casts);
+	    	
+	    	JLabel lb_actors = new JLabel("Actor / Actoress");
+	    	lb_actors.setBounds(470,50,200,50);
+	    	lb_actors.setFont(new Font("Arial", Font.PLAIN, 20));
+	    	frame.add(lb_actors);
+	    	
+	    	actor1textField.setBounds(470,100,150,30);
+	    	frame.add(actor1textField);
+	    	
+	    	actor2textField.setBounds(470,140,150,30);
+	    	frame.add(actor2textField);
+	    	
+	    	actor3textField.setBounds(470,180,150,30);
+	    	frame.add(actor3textField);
+	    	
+	    	actor4textField.setBounds(470,220,150,30);
+	    	frame.add(actor4textField);
+	    	
+	    	JLabel lb_director = new JLabel("Director");
+	    	lb_director.setBounds(470,270,200,50);
+	    	lb_director.setFont(new Font("Arial", Font.PLAIN, 20));
+	    	frame.add(lb_director);
+	    	
+	    	directortextField.setBounds(470,320,150,30);
+	    	frame.add(directortextField);
 	    	//Tags
 	    	JLabel lb_tags = new JLabel("Tags Ids and Values");
-	    	lb_tags.setBounds(480,10,200,50);
+	    	lb_tags.setBounds(680,10,200,50);
 	    	lb_tags.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(lb_tags);
 	    	
 	    	JScrollPane jp_tag = new JScrollPane(tag_checkBoxList);
-	    	jp_tag.setBounds(480, 50, 200, 400);
+	    	jp_tag.setBounds(680, 50, 200, 400);
 	    	frame.add(jp_tag);
 	    	
 	    	JLabel lb_tags_weight = new JLabel("Tags Weigth:");
-	    	lb_tags_weight.setBounds(480,450,200,50);
+	    	lb_tags_weight.setBounds(680,450,200,50);
 	    	lb_tags_weight.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(lb_tags_weight);
 	    	
-	    	tagsweightcomboBox.setBounds(480,500,100,30);
+	    	tagsweightcomboBox.setBounds(680,500,100,30);
 	    	tagsweightcomboBox.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(tagsweightcomboBox);
 	    	
-	    	tagsweighttextField.setBounds(585,500,95,30);
+	    	tagsweighttextField.setBounds(785,500,95,30);
 	    	frame.add(tagsweighttextField);
+	    	
 	    	//Movie Result
 	    	JLabel lb_movie_result = new JLabel("Movie Result");
 	    	lb_movie_result.setBounds(1020,10,200,50);
