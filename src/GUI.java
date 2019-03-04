@@ -97,11 +97,11 @@ public class GUI {
 	    	//================================================= BETWEEN ATTRIBUTES' VALUE =================================================//
 	    	String[] attributelistData = new String[]{"Select AND,OR","AND", "OR"};
 	        
-	        JComboBox<String> comboBox = new JComboBox<String>(attributelistData);
+	        JComboBox<String> conditioncomboBox = new JComboBox<String>(attributelistData);
 	        String[] condition = new String[1];
 	        condition[0] = "AND";
 
-	        comboBox.setSelectedIndex(0);
+	        conditioncomboBox.setSelectedIndex(0);
 	        
 	        
 			
@@ -202,9 +202,9 @@ public class GUI {
 	    	lb_bwtween_attributes.setFont(new Font("Arial", Font.PLAIN, 24));
 	    	frame.add(lb_bwtween_attributes);
 	    	
-	    	comboBox.setBounds(600,570,200,50);
-	    	comboBox.setFont(new Font("Arial", Font.PLAIN, 20));
-	    	frame.add(comboBox);
+	    	conditioncomboBox.setBounds(600,570,200,50);
+	    	conditioncomboBox.setFont(new Font("Arial", Font.PLAIN, 20));
+	    	frame.add(conditioncomboBox);
 	    	
 	    	
 	    	//sql Result
@@ -228,9 +228,12 @@ public class GUI {
 	    	        //your actions
 	    	    	String genres = "";
 	    	    	String countries = "";
-	    	    	String movie_result = "";
 	    	    	String tags = "";
+	    	    	String tagsweights = "";
+	    	    	String movie_result = "";
+	    	    	
 
+	    	    	//genres
 					for (int i = 0; i < clickedGenre.size(); i++) {
 						if (i == 0) {
 							genres += "AND ";
@@ -244,6 +247,8 @@ public class GUI {
 						}
 							
 					}
+					
+					//countries
 					for (int i = 0; i < clickedCountry.size(); i++) {
 						if (i == 0) {
 							countries += "AND ";
@@ -257,8 +262,8 @@ public class GUI {
 						}
 	            	}
 					
+					//tags
 					for (int i = 0; i < clickedTag.size(); i++) {
-						System.out.println(clickedTag.get(i).split(" ")[0]);
 						String tagID = clickedTag.get(i).split(" ")[0];
 						if (i == 0) {
 							tags += "AND ";
@@ -271,7 +276,11 @@ public class GUI {
 							
 						}
 	            	}
-
+					
+					if (tagsweighttextField.getText().trim().length() > 0){
+						tagsweights += "AND mt.tagWeight " + tags_weight[0] + " "+ tagsweighttextField.getText() + " \n";
+	    			}
+					//Built query string
 					String query = "SELECT m.id, m.title \n" + 
 							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m, TAGS t, MOVIE_TAGS mt \n" + 
 							"WHERE mg.movieID = m.id \n" + 
@@ -290,28 +299,12 @@ public class GUI {
 					if (condition[0].equals("OR")) {
 						query += ") \n";
 					}
+					if (tagsweights.length() > 0) {
+						query += tagsweights;
+					}
 					query +="GROUP BY m.id, m.title \n"+
 							"ORDER BY m.id ";
 							
-					/*
-	    	    	String query = "SELECT m.id, m.title \n" + 
-							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m, TAGS t, MOVIE_TAGS mt \n" + 
-							"WHERE mg.movieID = m.id \n" + 
-							"AND mc.movieID = m.id \n" + 
-							"AND mt.movieID = m.id \n"+
-							"AND mt.TAGID = t.id \n"+
-							genres[0]+"\n";
-					if (condition[0].equals("OR")) {
-							query += ")";
-					}
-							
-					query += countires[0]+"\n";
-					if (condition[0].equals("OR")) {
-						query += ")";	
-					}	
-					query += "GROUP BY m.id, m.title \n"+
-							"ORDER BY m.id ";
-					*/
 		            try {
 						ResultSet excute_movie_query_rs = con.createStatement().executeQuery(query);
 						while (excute_movie_query_rs.next()) {
@@ -357,13 +350,12 @@ public class GUI {
 	            	item.setSelected(!item.isSelected());
 	            	
 	            	if (item.isSelected()) {
-	            		clickedGenre.add(item.getLabel());
-	            		
+	            		clickedGenre.add(item.getLabel());	
 	            	}
 	            	else {
-	            		clickedGenre.remove(item.getLabel());
-	            		
+	            		clickedGenre.remove(item.getLabel());	
 	            	}
+	            	
 	            	country_model.removeAllElements();
 	            	tag_model.removeAllElements();
 	            	clickedCountry.clear();
@@ -576,24 +568,40 @@ public class GUI {
 				
 	      	});
 	    	// 添加条目选中状态改变的监听器
-	        comboBox.addItemListener(new ItemListener() {
+	    	conditioncomboBox.addItemListener(new ItemListener() {
 	            @Override
 	            public void itemStateChanged(ItemEvent e) {
 	                // 只处理选中的状态
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
-	                	if (comboBox.getSelectedIndex() != 0) {
-	                		 condition[0] = comboBox.getSelectedItem().toString();
-	                		 System.out.println(condition[0]);
+	                	if (conditioncomboBox.getSelectedIndex() != 0) {
+	                		condition[0] = conditioncomboBox.getSelectedItem().toString();
+	                		//System.out.println(condition[0]);
 	                	}
 	                	else {
 	                		condition[0] = "AND";
 	                	}
-	                    
 	                }
 	            }
 	        });
 	    	
+	        tagsweightcomboBox.addItemListener(new ItemListener() {
+	            @Override
+	            public void itemStateChanged(ItemEvent e) {
+	                
+	            	
+	                if (e.getStateChange() == ItemEvent.SELECTED) {
+	                	if (tagsweightcomboBox.getSelectedIndex() != 0) {
+	                		tags_weight[0] = tagsweightcomboBox.getSelectedItem().toString();
+	                		//System.out.println(tags_weight[0]);
+	                	}
+	                	else {
+	                		tags_weight[0] = "";
+	                	}
+    
+	                }
+	            }
+	        });
 	   }
 
 		private static DatePicker getDatePicker() {
