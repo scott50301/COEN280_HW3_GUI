@@ -19,6 +19,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -81,11 +83,14 @@ public class GUI {
 	    	JCheckBoxList country_checkBoxList = new JCheckBoxList(country_model);
 	    	
 	    	//================================================= CAST =================================================//
-	    	JTextField actor1textField = new JTextField(100); 
 	    	JTextField actor2textField = new JTextField(100); 
 	    	JTextField actor3textField = new JTextField(100); 
 	    	JTextField actor4textField = new JTextField(100);
 	    	JTextField directortextField = new JTextField(100); 
+	    	
+	    	List<String> actor1listData = new ArrayList<>();
+	    	DefaultComboBoxModel<String> actor1_model = new DefaultComboBoxModel<String>();
+	        JComboBox<String> actor1comboBox = new JComboBox<String>(actor1_model);
 	    	//================================================= TAG =================================================//
 	    	List<String> tagdata = new ArrayList<>();
 	    	List<String> clickedTag = new ArrayList<>();
@@ -174,8 +179,8 @@ public class GUI {
 	    	lb_actors.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(lb_actors);
 	    	
-	    	actor1textField.setBounds(470,100,150,30);
-	    	frame.add(actor1textField);
+	    	actor1comboBox.setBounds(470,100,200,30);
+	    	frame.add(actor1comboBox);
 	    	
 	    	actor2textField.setBounds(470,140,150,30);
 	    	frame.add(actor2textField);
@@ -225,8 +230,8 @@ public class GUI {
 	    	JScrollPane jp_movie_resulty = new JScrollPane(movieresult_checkBoxList);
 	    	jp_movie_resulty.setBounds(920, 50, 300, 400);
 	    	frame.add(jp_movie_resulty);
-	    	/*
 	    	
+	    	/*	  
 	    	JTextArea jt_movie_result = new JTextArea("", 10, 10);
 	    	JScrollPane scroll_movie_result = new JScrollPane(jt_movie_result);
 	    	scroll_movie_result.setBounds(920, 50, 400, 400);
@@ -330,7 +335,6 @@ public class GUI {
 						}
 						else {
 							tags += condition[0]+"  m.id IN (SELECT mt.movieID FROM MOVIE_TAGS mt WHERE mt.tagID = "+tagID+") \n";
-							
 						}
 	            	}
 					
@@ -341,29 +345,36 @@ public class GUI {
 					//date
 					
 					//Built query string
-					String query = "SELECT m.id, m.title , m.year, m.rtAudienceRating,m. rtAudienceNumRatings, mg.genre, mc.country \n" + 
-							"FROM MOVIE m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, TAGS t, MOVIE_TAGS mt \n" + 
-							"WHERE mg.movieID = m.id \n" + 
-							"AND mc.movieID = m.id \n" + 
-							"AND mt.movieID = m.id \n"+
-							"AND mt.TAGID = t.id \n"+
-							genres;
+					String query =	"SELECT m.id, m.title , m.year, m.rtAudienceRating,m. rtAudienceNumRatings, mg.genre, mc.country \n" + 
+									"FROM MOVIE m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, TAGS t, MOVIE_TAGS mt \n" + 
+									"WHERE mg.movieID = m.id \n" + 
+									"AND mc.movieID = m.id \n" + 
+									"AND mt.movieID = m.id \n"+
+									"AND mt.TAGID = t.id \n"+
+									genres;
+					
 					if (condition[0].equals("OR")) {
-						query += ") \n";
+							query += ") \n";
 					}
-					query += countries;
+					
+							query += countries;
+							
 					if (condition[0].equals("OR")) {
-						query += ") \n";
+							query += ") \n";
 					}
-					query += tags;
+					
+							query += tags;
+							
 					if (condition[0].equals("OR")) {
-						query += ") \n";
+							query += ") \n";
 					}
+					
 					if (tagsweights.length() > 0) {
-						query += tagsweights;
+							query += tagsweights;
 					}
-					query +="GROUP BY m.id, m.title , m.year, m.rtAudienceRating,m. rtAudienceNumRatings, mg.genre, mc.country \n"+
-							"ORDER BY m.id ";
+					
+							query += "GROUP BY m.id, m.title , m.year, m.rtAudienceRating,m. rtAudienceNumRatings, mg.genre, mc.country \n"+
+									 "ORDER BY m.id ";
 							
 		            try {
 						ResultSet excute_movie_query_rs = con.createStatement().executeQuery(query);
@@ -378,13 +389,13 @@ public class GUI {
 						  	movie_result = mid+", "+title+", "+genre+", "+year+", "+country+", "+rtAudienceRating+", "+rtAudienceNumRatings; 
 						  	movieresultdata.add(movie_result);
 						}
-						/*
+						
 						Font f = new Font("Serif", Font.BOLD, 20); 
 						jt.setText("");
 			            jt.setFont(f);
 			            jt.append(query); 
 			            
-			            
+			            /*
 						jt_movie_result.setText("");
 						jt_movie_result.setFont(new Font("Serif", Font.BOLD, 20));
 						jt_movie_result.append(movie_result);
@@ -404,7 +415,13 @@ public class GUI {
 	    	    }
 	    	});
 	    	
-	    	
+	    	excute_user_query.addActionListener(new ActionListener() {
+
+	    	    @Override
+	    	    public void actionPerformed(ActionEvent e) {
+	    	    	
+	    	    }
+	    	});
 	    	genrecheckBoxList.addMouseListener(new MouseAdapter() {
 	    		public void mouseClicked(MouseEvent event) {
 	 
@@ -561,32 +578,60 @@ public class GUI {
 								"AND mt.movieID = m.id \n"+
 								"AND mt.TAGID = t.id \n"+
 								genres[0]+"\n";
-						if (condition[0].equals("OR")) {
-								query += ")";
-						}
+								if (condition[0].equals("OR")) {
+									query += ")";
+								}
 								
 								query += countires[0]+"\n";
-						if (condition[0].equals("OR")) {
-								query += ")";	
-						}	
+								if (condition[0].equals("OR")) {
+									query += ")";	
+								}	
 								query += "GROUP BY t.id, t.value \n"+
 								"ORDER BY t.id ";
-								System.out.println(query);
 								
+								
+						String query2 = "Select ma.actorName \n" + 
+								"from MOVIE m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE_ACTORS ma \n" + 
+								"where mg.movieID = m.id \n" + 
+								"AND mc.movieID = m.id \n" + 
+								"AND ma.movieID = m.id \n" + 
+								genres[0]+"\n";
+								if (condition[0].equals("OR")) {
+									query2 += ")";
+								}
+										
+								query2 += countires[0]+"\n";
+								if (condition[0].equals("OR")) {
+									query2 += ")";	
+								}	
+								query2 += "GROUP BY ma.actorName \n" + 
+								"ORDER BY ma.actorName ";
+								System.out.println(query2);
 						try {
 							ResultSet GetTags = con.createStatement().executeQuery(query);
+							ResultSet GetActors = con.createStatement().executeQuery(query2);
 							tagdata.clear();
+							actor1listData.clear();
 							while (GetTags.next()) {
 							  	String tagid = GetTags.getString("id");
 							  	String tagvalue = GetTags.getString("value");
-							  	
 							  	tagdata.add(tagid+" "+tagvalue);
 							  	
 							}
 							
+							while (GetActors.next()) {
+								String actor = GetActors.getString("actorName");
+							  	actor1listData.add(actor);  	
+							}
 							
+							
+						  	
 							for (String tag : tagdata) {
 								tag_model.addElement(new JCheckBox(tag));
+							}
+							actor1_model.addElement("");
+							for (String actor : actor1listData) {
+								actor1_model.addElement(actor);
 							}
 							
 							
@@ -658,10 +703,10 @@ public class GUI {
 	            	item.setSelected(!item.isSelected());
 	            	
 	            	if (item.isSelected()) {
-	            		clickedMovieresult.add(item.getLabel());
+	            		clickedMovieresult.add(item.getLabel().split(",")[0]);
 	            	}
 	            	else {
-	            		clickedMovieresult.remove(item.getLabel());
+	            		clickedMovieresult.remove(item.getLabel().split(",")[0]);
 	            	}
 	            	
 
