@@ -103,7 +103,12 @@ public class GUI {
 
 	        conditioncomboBox.setSelectedIndex(0);
 	        
-	        
+	      //================================================= MOVIE RESULT =================================================//
+	        List<String> movieresultdata = new ArrayList<>();
+	    	List<String> clickedcMovieresult = new ArrayList<>();
+	    	String[] movieresults = new String[1];
+	    	DefaultListModel<JCheckBox> movieresult_model = new DefaultListModel<JCheckBox>();
+	    	JCheckBoxList movieresult_checkBoxList = new JCheckBoxList(movieresult_model);
 			
 	    	frame.setBounds(100, 50, 1250, 1000);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -180,10 +185,17 @@ public class GUI {
 	    	lb_movie_result.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(lb_movie_result);
 	    	
+	    	/*
+	    	JScrollPane jp_movie_resulty = new JScrollPane(movieresult_checkBoxList);
+	    	jp_movie_resulty.setBounds(920, 50, 300, 400);
+	    	frame.add(jp_movie_resulty);
+	    	*/
+	    	
 	    	JTextArea jt_movie_result = new JTextArea("", 10, 10);
 	    	JScrollPane scroll_movie_result = new JScrollPane(jt_movie_result);
 	    	scroll_movie_result.setBounds(920, 50, 300, 400);
 	    	frame.add(scroll_movie_result);
+	    	
 	    	
 	    	//User Result
 	    	JLabel lb_user_result = new JLabel("User Result");
