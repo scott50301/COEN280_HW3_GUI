@@ -229,37 +229,48 @@ public class GUI {
 	    	    	String genres = "";
 	    	    	String countries = "";
 	    	    	String movie_result = "";
+	    	    	String tags = "";
 
 					for (int i = 0; i < clickedGenre.size(); i++) {
 						if (i == 0) {
-							genres += "And ";
+							genres += "AND ";
 							if (condition[0].equals("OR"))
 								genres += "(";
-							genres += "m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" +
-								"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
+							genres += "m.id in (SELECT mg.movieID FROM MOVIE_GENRES mg WHERE mg.GENRE =  '"+clickedGenre.get(i)+"') \n";
 						}
 						else {
-							genres += condition[0]+" m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" + 
-									"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
+							genres += condition[0]+" m.id IN (SELECT mg.movieID FROM MOVIE_GENRES mg WHERE  mg.GENRE =  '"+clickedGenre.get(i)+"') \n";
 							
 						}
 							
 					}
 					for (int i = 0; i < clickedCountry.size(); i++) {
 						if (i == 0) {
-							countries += "And ";
+							countries += "AND ";
 							if (condition[0].equals("OR"))
 								countries += "(";
-							countries += " m.id in (Select m.id from MOVIE_COUNTRIES mc, MOVIE m WHERE mc.movieID = m.id  \r\n" +
-								"And mc.COUNTRY =  '"+clickedCountry.get(i)+"') ";
+							countries += " m.id IN (SELECT mc.movieID FROM MOVIE_COUNTRIES mc WHERE mc.COUNTRY =  '"+clickedCountry.get(i)+"') \n";
 						}
 						else {
-							countries += condition[0]+" m.id in (Select m.id from MOVIE_COUNTRIES mc, MOVIE m WHERE mc.movieID = m.id  \r\n" + 
-									"And mc.COUNTRY =  '"+clickedCountry.get(i)+"') ";
+							countries += condition[0]+" m.id IN (SELECT mc.movieID FROM MOVIE_COUNTRIES mc WHERE  mc.COUNTRY =  '"+clickedCountry.get(i)+"') \n";
 							
 						}
 	            	}
-				
+					
+					for (int i = 0; i < clickedTag.size(); i++) {
+						System.out.println(clickedTag.get(i).split(" ")[0]);
+						String tagID = clickedTag.get(i).split(" ")[0];
+						if (i == 0) {
+							tags += "AND ";
+							if (condition[0].equals("OR"))
+								tags += "(";
+							tags += " m.id IN (SELECT mt.movieID FROM MOVIE_TAGS mt WHERE mt.tagID = "+tagID+") \n";
+						}
+						else {
+							tags += condition[0]+"  m.id IN (SELECT mt.movieID FROM MOVIE_TAGS mt WHERE mt.tagID = "+tagID+") \n";
+							
+						}
+	            	}
 
 					String query = "SELECT m.id, m.title \n" + 
 							"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m, TAGS t, MOVIE_TAGS mt \n" + 
@@ -267,13 +278,17 @@ public class GUI {
 							"AND mc.movieID = m.id \n" + 
 							"AND mt.movieID = m.id \n"+
 							"AND mt.TAGID = t.id \n"+
-							genres+"\n";
+							genres;
 					if (condition[0].equals("OR")) {
-						query += ")";
+						query += ") \n";
 					}
-							query += countries+"\n";
+					query += countries;
 					if (condition[0].equals("OR")) {
-						query += ")";
+						query += ") \n";
+					}
+					query += tags;
+					if (condition[0].equals("OR")) {
+						query += ") \n";
 					}
 					query +="GROUP BY m.id, m.title \n"+
 							"ORDER BY m.id ";
@@ -500,14 +515,10 @@ public class GUI {
 							  	String tagid = GetTags.getString("id");
 							  	String tagvalue = GetTags.getString("value");
 							  	
-							  	tagdata.add(tagid+"  "+tagvalue);
+							  	tagdata.add(tagid+" "+tagvalue);
 							  	
 							}
 							
-							
-							
-							//jp_country.revalidate();
-							//country_checkBoxList.revalidate();
 							
 							for (String tag : tagdata) {
 								tag_model.addElement(new JCheckBox(tag));
@@ -685,7 +696,7 @@ public class GUI {
 
 
 	// Represents items in the list that can be selected
-	 
+	 /*
 	class CheckboxListItem {
 	   private String label;
 	   private boolean isSelected = false;
@@ -725,5 +736,5 @@ public class GUI {
 	      return this;
 	   }
 	}
-	
+	*/
 	
