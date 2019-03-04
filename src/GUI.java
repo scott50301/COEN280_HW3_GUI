@@ -110,7 +110,7 @@ public class GUI {
 	        
 	      //================================================= MOVIE RESULT =================================================//
 	        List<String> movieresultdata = new ArrayList<>();
-	    	List<String> clickedcMovieresult = new ArrayList<>();
+	    	List<String> clickedMovieresult = new ArrayList<>();
 	    	String[] movieresults = new String[1];
 	    	DefaultListModel<JCheckBox> movieresult_model = new DefaultListModel<JCheckBox>();
 	    	JCheckBoxList movieresult_checkBoxList = new JCheckBoxList(movieresult_model);
@@ -221,17 +221,17 @@ public class GUI {
 	    	lb_movie_result.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(lb_movie_result);
 	    	
-	    	/*
+	    	
 	    	JScrollPane jp_movie_resulty = new JScrollPane(movieresult_checkBoxList);
 	    	jp_movie_resulty.setBounds(920, 50, 300, 400);
 	    	frame.add(jp_movie_resulty);
-	    	*/
+	    	/*
 	    	
 	    	JTextArea jt_movie_result = new JTextArea("", 10, 10);
 	    	JScrollPane scroll_movie_result = new JScrollPane(jt_movie_result);
 	    	scroll_movie_result.setBounds(920, 50, 400, 400);
 	    	frame.add(scroll_movie_result);
-	    	
+	    	*/
 	    	
 	    	//User Result
 	    	JLabel lb_user_result = new JLabel("User Result");
@@ -375,9 +375,10 @@ public class GUI {
 						  	String country = excute_movie_query_rs.getString("country");
 						  	String rtAudienceRating = excute_movie_query_rs.getString("rtAudienceRating");
 						  	String rtAudienceNumRatings = excute_movie_query_rs.getString("rtAudienceNumRatings");
-						  	movie_result += mid+", "+title+", "+genre+", "+year+", "+country+", "+rtAudienceRating+", "+rtAudienceNumRatings+"\n"; 
-						  
+						  	movie_result = mid+", "+title+", "+genre+", "+year+", "+country+", "+rtAudienceRating+", "+rtAudienceNumRatings; 
+						  	movieresultdata.add(movie_result);
 						}
+						/*
 						Font f = new Font("Serif", Font.BOLD, 20); 
 						jt.setText("");
 			            jt.setFont(f);
@@ -387,7 +388,13 @@ public class GUI {
 						jt_movie_result.setText("");
 						jt_movie_result.setFont(new Font("Serif", Font.BOLD, 20));
 						jt_movie_result.append(movie_result);
+						*/
+						movieresult_model.removeAllElements();
+						for (String movieresult : movieresultdata) {
+							movieresult_model.addElement(new JCheckBox(movieresult));
 						
+						}
+						movieresultdata.clear();
 						
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
@@ -598,8 +605,7 @@ public class GUI {
 	    		}
 				
 	      	});
-	    	
-	    	
+	    		
 	    	tag_checkBoxList.addMouseListener(new MouseAdapter() {
 	    		public void mouseClicked(MouseEvent event) {
 	 
@@ -628,6 +634,40 @@ public class GUI {
 	            	// Repaint cell
 	 
 	            	list_tag.repaint(list_tag.getCellBounds(index, index));
+	            	
+	            	
+	    		}
+				
+	      	});
+	    	
+	    	movieresult_checkBoxList.addMouseListener(new MouseAdapter() {
+	    		public void mouseClicked(MouseEvent event) {
+	 
+
+	    			JCheckBoxList list_movieresult = (JCheckBoxList) event.getSource();
+	    			//JList<CheckboxListItem> list_genre = (JList<CheckboxListItem>) event.getSource();
+	    			
+	    			
+	    			// Get index of item clicked
+	 
+	            	int index = list_movieresult.locationToIndex(event.getPoint());
+	            	JCheckBox item = list_movieresult.getModel().getElementAt(index);
+	 
+	            	// Toggle selected state
+	 
+	            	item.setSelected(!item.isSelected());
+	            	
+	            	if (item.isSelected()) {
+	            		clickedMovieresult.add(item.getLabel());
+	            	}
+	            	else {
+	            		clickedMovieresult.remove(item.getLabel());
+	            	}
+	            	
+
+	            	// Repaint cell
+	 
+	            	list_movieresult.repaint(list_movieresult.getCellBounds(index, index));
 	            	
 	            	
 	    		}
