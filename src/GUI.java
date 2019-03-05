@@ -310,6 +310,7 @@ public class GUI {
 	    	        //your actions
 	    	    	String genres = "";
 	    	    	String countries = "";
+	    	    	String actors = "";
 	    	    	String tags = "";
 	    	    	String tagsweights = "";
 	    	    	String movie_result = "";
@@ -364,23 +365,39 @@ public class GUI {
 						tagsweights += "AND mt.tagWeight " + tags_weight[0] + " "+ tagsweighttextField.getText() + " \n";
 	    			}
 					
-					//date
+					//Actors
+					for (int i = 0; i < chosenactors.size(); i++) {
+						String actorName = chosenactors.get(i);
+						if (i == 0) {
+							actors += "AND ";
+							if (condition[0].equals("OR"))
+								actors += "(";
+							actors += " m.id IN (SELECT ma.movieID FROM MOVIE_ACTORS ma WHERE ma.actorname =  '"+actorName+"') \n";
+						}
+						else {
+							actors += condition[0]+" m.id IN (SELECT ma.movieID FROM MOVIE_ACTORS ma WHERE ma.actorname =  '"+actorName+"') \n";
+						}
+	            	}
+					
 					
 					//Built query string
 					String query =	"SELECT m.id, m.title , m.year, m.rtAudienceRating,m. rtAudienceNumRatings, mg.genre, mc.country \n" + 
 									"FROM MOVIE m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg";
 					if (tags.length() > 0 || tagsweights.length() > 0 ) {
-							query += ", TAGS t, MOVIE_TAGS mt \n";
-					} else {
-						query += "\n";
+							query += ", TAGS t, MOVIE_TAGS mt ";
+					} 
+					if (actors.length() > 0) {
+							query += ", MOVIE_ACTORS ma";
 					}
-
-							query += "WHERE mg.movieID = m.id \n" + 
+							query += "\n WHERE mg.movieID = m.id \n" + 
 									"AND mc.movieID = m.id \n";
 					if (tags.length() > 0 || tagsweights.length() > 0 ) {
 							query += "AND mt.movieID = m.id \n"+
 									 "AND mt.TAGID = t.id \n";
 					}
+					if (actors.length() > 0 ) {
+						query += "AND ma.movieID = m.id \n";
+				}
 									
 							query += genres;
 					
@@ -403,7 +420,11 @@ public class GUI {
 					if (tagsweights.length() > 0) {
 							query += tagsweights;
 					}
+							query += actors;
 					
+					if (condition[0].equals("OR") && actors.length() > 0) {
+							query += ") \n";
+					}
 					if (clickedGenre.size() > 0) {
 							query += "AND mg.genre in ("; 
 							for (int i = 0; i < clickedGenre.size(); i++) {
@@ -419,7 +440,7 @@ public class GUI {
 							query += "GROUP BY m.id, m.title , m.year, m.rtAudienceRating,m. rtAudienceNumRatings, mg.genre, mc.country \n"+
 									 "ORDER BY m.id ";
 							
-							
+							System.out.println(query);	
 		            try {
 						ResultSet excute_movie_query_rs = con.createStatement().executeQuery(query);
 						while (excute_movie_query_rs.next()) {
@@ -654,7 +675,7 @@ public class GUI {
 								}	
 								query2 += "GROUP BY ma.actorName \n" + 
 								"ORDER BY ma.actorName ";
-								System.out.println(query2);
+								//System.out.println(query2);
 						try {
 							ResultSet GetTags = con.createStatement().executeQuery(query);
 							ResultSet GetActors = con.createStatement().executeQuery(query2);
@@ -669,7 +690,8 @@ public class GUI {
 							
 							while (GetActors.next()) {
 								String actor = GetActors.getString("actorName");
-							  	actorlistData.add(actor);  	
+								if (actor != null && actor.length() > 0)
+									actorlistData.add(actor);  	
 							}
 							
 							
