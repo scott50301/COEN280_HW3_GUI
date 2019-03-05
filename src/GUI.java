@@ -317,7 +317,8 @@ public class GUI {
 	    	    	String startdate = "";
 	    	    	String enddate = "";
 	    	    	
-
+	    	    	movieresult_model.removeAllElements();
+	    	    	movieresultdata.clear();
 	    	    	//genres
 					for (int i = 0; i < clickedGenre.size(); i++) {
 						if (i == 0) {
@@ -440,7 +441,7 @@ public class GUI {
 							query += "GROUP BY m.id, m.title , m.year, m.rtAudienceRating,m. rtAudienceNumRatings, mg.genre, mc.country \n"+
 									 "ORDER BY m.id ";
 							
-							System.out.println(query);	
+							//System.out.println(query);	
 		            try {
 						ResultSet excute_movie_query_rs = con.createStatement().executeQuery(query);
 						while (excute_movie_query_rs.next()) {
@@ -465,12 +466,12 @@ public class GUI {
 						jt_movie_result.setFont(new Font("Serif", Font.BOLD, 20));
 						jt_movie_result.append(movie_result);
 						*/
-						movieresult_model.removeAllElements();
+						
 						for (String movieresult : movieresultdata) {
 							movieresult_model.addElement(new JCheckBox(movieresult));
 						
 						}
-						movieresultdata.clear();
+						
 						
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
@@ -512,7 +513,12 @@ public class GUI {
 	            	
 	            	country_model.removeAllElements();
 	            	tag_model.removeAllElements();
+	            	actor1_model.removeAllElements();
+					actor2_model.removeAllElements();
+					actor3_model.removeAllElements();
+					actor4_model.removeAllElements();
 	            	clickedCountry.clear();
+	            	chosenactors.clear();
 	            	if (clickedGenre.size() > 0) {
 		            	genres[0] = "";
 		            	for (int i = 0; i < clickedGenre.size(); i++) {
@@ -681,6 +687,7 @@ public class GUI {
 							ResultSet GetActors = con.createStatement().executeQuery(query2);
 							tagdata.clear();
 							actorlistData.clear();
+							chosenactors.clear();
 							while (GetTags.next()) {
 							  	String tagid = GetTags.getString("id");
 							  	String tagvalue = GetTags.getString("value");
