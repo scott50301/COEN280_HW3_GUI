@@ -309,6 +309,7 @@ public class GUI {
 	    	    	String genres = "";
 	    	    	String countries = "";
 	    	    	String actors = "";
+	    	    	String directors = "";
 	    	    	String tags = "";
 	    	    	String tagsweights = "";
 	    	    	String movie_result = "";
@@ -365,6 +366,19 @@ public class GUI {
 	    			}
 					
 					//Actors
+					chosenactors.clear();
+					if (actor1comboBox.getSelectedItem().toString().length() > 0) {
+						chosenactors.add(actor1comboBox.getSelectedItem().toString());
+					}
+					if (actor2comboBox.getSelectedItem().toString().length() > 0) {
+						chosenactors.add(actor2comboBox.getSelectedItem().toString());
+					}
+					if (actor3comboBox.getSelectedItem().toString().length() > 0) {
+						chosenactors.add(actor3comboBox.getSelectedItem().toString());
+					}
+					if (actor4comboBox.getSelectedItem().toString().length() > 0) {
+						chosenactors.add(actor4comboBox.getSelectedItem().toString());
+					}
 					for (int i = 0; i < chosenactors.size(); i++) {
 						String actorName = chosenactors.get(i);
 						if (i == 0) {
@@ -378,6 +392,24 @@ public class GUI {
 						}
 	            	}
 					
+					//Director
+					chosendirector.clear();
+					if (directorcomboBox.getSelectedItem().toString().length() > 0) {
+						chosendirector.add(directorcomboBox.getSelectedItem().toString());
+					}
+					for (int i = 0; i < chosendirector.size(); i++) {
+						String directorName = chosendirector.get(i);
+						if (i == 0) {
+							directors += "AND ";
+							if (condition[0].equals("OR"))
+								directors += "(";
+							directors += " m.id IN (SELECT md.movieID FROM MOVIE_DIRECTORS md WHERE md.directorName =  '"+directorName+"') \n";
+						}
+						else {
+							directors += condition[0]+" m.id IN (SELECT md.movieID FROM MOVIE_DIRECTORS md WHERE md.directorName =  '"+directorName+"') \n";
+						}
+	            	}
+					
 					
 					//Built query string
 					String query =	"SELECT m.id, m.title , m.year, m.rtAudienceRating,m. rtAudienceNumRatings, mg.genre, mc.country \n" + 
@@ -388,6 +420,9 @@ public class GUI {
 					if (actors.length() > 0) {
 							query += ", MOVIE_ACTORS ma";
 					}
+					if (directors.length() > 0) {
+						query += ", MOVIE_DIRECTORS md";
+					}
 							query += "\n WHERE mg.movieID = m.id \n" + 
 									"AND mc.movieID = m.id \n";
 					if (tags.length() > 0 || tagsweights.length() > 0 ) {
@@ -396,7 +431,10 @@ public class GUI {
 					}
 					if (actors.length() > 0 ) {
 						query += "AND ma.movieID = m.id \n";
-				}
+					}
+					if (directors.length() > 0 ) {
+						query += "AND md.movieID = m.id \n";
+					}
 									
 							query += genres;
 					
@@ -420,10 +458,15 @@ public class GUI {
 							query += tagsweights;
 					}
 							query += actors;
-					
 					if (condition[0].equals("OR") && actors.length() > 0) {
 							query += ") \n";
 					}
+							
+							query += directors;
+					if (condition[0].equals("OR") && directors.length() > 0) {
+								query += ") \n";
+					}
+					
 					if (clickedGenre.size() > 0) {
 							query += "AND mg.genre in ("; 
 							for (int i = 0; i < clickedGenre.size(); i++) {
@@ -878,11 +921,11 @@ public class GUI {
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (actor1comboBox.getSelectedIndex() != 0) {
-	                		chosenactors.add(actor1comboBox.getSelectedItem().toString());
+	                		//chosenactors.add(actor1comboBox.getSelectedItem().toString());
 	                		//System.out.println(tags_weight[0]);
 	                	}
 	                	else {
-	                		chosenactors.remove(actor1comboBox.getSelectedItem().toString());
+	                		//chosenactors.remove(actor1comboBox.getSelectedItem().toString());
 	                	}
     
 	                }
@@ -896,11 +939,11 @@ public class GUI {
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (actor2comboBox.getSelectedIndex() != 0) {
-	                		chosenactors.add(actor2comboBox.getSelectedItem().toString());
+	                		//chosenactors.add(actor2comboBox.getSelectedItem().toString());
 	                		//System.out.println(tags_weight[0]);
 	                	}
 	                	else {
-	                		chosenactors.remove(actor2comboBox.getSelectedItem().toString());
+	                		//chosenactors.remove(actor2comboBox.getSelectedItem().toString());
 	                	}
     
 	                }
@@ -914,11 +957,11 @@ public class GUI {
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (actor3comboBox.getSelectedIndex() != 0) {
-	                		chosenactors.add(actor3comboBox.getSelectedItem().toString());
+	                		//chosenactors.add(actor3comboBox.getSelectedItem().toString());
 	                		//System.out.println(tags_weight[0]);
 	                	}
 	                	else {
-	                		chosenactors.remove(actor3comboBox.getSelectedItem().toString());
+	                		//chosenactors.remove(actor3comboBox.getSelectedItem().toString());
 	                	}
     
 	                }
@@ -932,11 +975,11 @@ public class GUI {
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (actor4comboBox.getSelectedIndex() != 0) {
-	                		chosenactors.add(actor4comboBox.getSelectedItem().toString());
+	                		//chosenactors.add(actor4comboBox.getSelectedItem().toString());
 	                		//System.out.println(tags_weight[0]);
 	                	}
 	                	else {
-	                		chosenactors.remove(actor4comboBox.getSelectedItem().toString());
+	                		//chosenactors.remove(actor4comboBox.getSelectedItem().toString());
 	                	}
     
 	                }
