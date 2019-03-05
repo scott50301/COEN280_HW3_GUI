@@ -83,13 +83,11 @@ public class GUI {
 	    	JCheckBoxList country_checkBoxList = new JCheckBoxList(country_model);
 	    	
 	    	//================================================= CAST =================================================//
-	    	JTextField actor2textField = new JTextField(100); 
-	    	JTextField actor3textField = new JTextField(100); 
-	    	JTextField actor4textField = new JTextField(100);
-	    	JTextField directortextField = new JTextField(100); 
-	    	
+
 	    	List<String> actorlistData = new ArrayList<>();
 	    	List<String> chosenactors = new ArrayList<>();
+	    	List<String> directorlistData = new ArrayList<>();
+	    	List<String> chosendirector = new ArrayList<>();
 	    	DefaultComboBoxModel<String> actor1_model = new DefaultComboBoxModel<String>();
 	    	DefaultComboBoxModel<String> actor2_model = new DefaultComboBoxModel<String>();
 	    	DefaultComboBoxModel<String> actor3_model = new DefaultComboBoxModel<String>();
@@ -517,8 +515,12 @@ public class GUI {
 					actor2_model.removeAllElements();
 					actor3_model.removeAllElements();
 					actor4_model.removeAllElements();
+					director_model.removeAllElements();
 	            	clickedCountry.clear();
+	            	actorlistData.clear();
 	            	chosenactors.clear();
+	            	directorlistData.clear();
+	            	chosendirector.clear();
 	            	if (clickedGenre.size() > 0) {
 		            	genres[0] = "";
 		            	for (int i = 0; i < clickedGenre.size(); i++) {
@@ -611,6 +613,7 @@ public class GUI {
 					actor2_model.removeAllElements();
 					actor3_model.removeAllElements();
 					actor4_model.removeAllElements();
+					director_model.removeAllElements();
 	            	genres[0] = "";
 	            	for (int i = 0; i < clickedGenre.size(); i++) {
 						if (i == 0) {
@@ -665,29 +668,50 @@ public class GUI {
 								"ORDER BY t.id ";
 								
 								
-						String query2 = "Select ma.actorName \n" + 
+						String actor_query = "Select ma.actorName \n" + 
 								"from MOVIE m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE_ACTORS ma \n" + 
 								"where mg.movieID = m.id \n" + 
 								"AND mc.movieID = m.id \n" + 
 								"AND ma.movieID = m.id \n" + 
 								genres[0]+"\n";
 								if (condition[0].equals("OR")) {
-									query2 += ")";
+									actor_query += ")";
 								}
 										
-								query2 += countires[0]+"\n";
+								actor_query += countires[0]+"\n";
 								if (condition[0].equals("OR")) {
-									query2 += ")";	
+									actor_query += ")";	
 								}	
-								query2 += "GROUP BY ma.actorName \n" + 
+								actor_query += "GROUP BY ma.actorName \n" + 
 								"ORDER BY ma.actorName ";
+								//System.out.println(query2);
+								
+						String director_query = "Select md.directorName \n" + 
+								"from MOVIE m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE_DIRECTORS md \n" + 
+								"where mg.movieID = m.id \n" + 
+								"AND mc.movieID = m.id \n" + 
+								"AND md.movieID = m.id \n" + 
+								genres[0]+"\n";
+								if (condition[0].equals("OR")) {
+									director_query += ")";
+								}
+										
+								director_query += countires[0]+"\n";
+								if (condition[0].equals("OR")) {
+									director_query += ")";	
+								}	
+								director_query += "GROUP BY md.directorName \n" + 
+								"ORDER BY md.directorName ";
 								//System.out.println(query2);
 						try {
 							ResultSet GetTags = con.createStatement().executeQuery(query);
-							ResultSet GetActors = con.createStatement().executeQuery(query2);
+							ResultSet GetActors = con.createStatement().executeQuery(actor_query);
+							ResultSet GetDirector = con.createStatement().executeQuery(director_query);
 							tagdata.clear();
 							actorlistData.clear();
 							chosenactors.clear();
+							directorlistData.clear();
+							chosendirector.clear();
 							while (GetTags.next()) {
 							  	String tagid = GetTags.getString("id");
 							  	String tagvalue = GetTags.getString("value");
@@ -701,6 +725,11 @@ public class GUI {
 									actorlistData.add(actor);  	
 							}
 							
+							while (GetDirector.next()) {
+								String director = GetDirector.getString("directorName");
+								if (director != null && director.length() > 0)
+									directorlistData.add(director);  	
+							}
 							
 						  	
 							for (String tag : tagdata) {
@@ -711,11 +740,16 @@ public class GUI {
 							actor2_model.addElement("");
 							actor3_model.addElement("");
 							actor4_model.addElement("");
+							director_model.addElement("");
 							for (String actor : actorlistData) {
 								actor1_model.addElement(actor);
 								actor2_model.addElement(actor);
 								actor3_model.addElement(actor);
 								actor4_model.addElement(actor);
+							}
+							
+							for (String director : directorlistData) {
+								director_model.addElement(director);
 							}
 							
 							
@@ -852,9 +886,7 @@ public class GUI {
 	                	}
     
 	                }
-	                for(String s : chosenactors) {
-	                	System.out.println(s);
-	                }
+	                
 	            }
 	        });
 	        actor2comboBox.addItemListener(new ItemListener() {
@@ -872,9 +904,7 @@ public class GUI {
 	                	}
     
 	                }
-	                for(String s : chosenactors) {
-	                	System.out.println(s);
-	                }
+	                
 	            }
 	        });
 	        actor3comboBox.addItemListener(new ItemListener() {
@@ -892,9 +922,7 @@ public class GUI {
 	                	}
     
 	                }
-	                for(String s : chosenactors) {
-	                	System.out.println(s);
-	                }
+	               
 	            }
 	        });
 	        actor4comboBox.addItemListener(new ItemListener() {
@@ -912,9 +940,26 @@ public class GUI {
 	                	}
     
 	                }
-	                for(String s : chosenactors) {
-	                	System.out.println(s);
+	                
+	            }
+	        });
+	        
+	        directorcomboBox.addItemListener(new ItemListener() {
+	            @Override
+	            public void itemStateChanged(ItemEvent e) {
+	                
+	            	
+	                if (e.getStateChange() == ItemEvent.SELECTED) {
+	                	if (directorcomboBox.getSelectedIndex() != 0) {
+	                		chosendirector.add(directorcomboBox.getSelectedItem().toString());
+	                		//System.out.println(tags_weight[0]);
+	                	}
+	                	else {
+	                		chosendirector.remove(directorcomboBox.getSelectedItem().toString());
+	                	}
+    
 	                }
+	                
 	            }
 	        });
 	   }
