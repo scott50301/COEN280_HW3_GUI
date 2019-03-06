@@ -112,7 +112,7 @@ public class GUI {
 	        
 	        JTextField tagsweighttextField = new JTextField(16); 
 	    	//================================================= BETWEEN ATTRIBUTES' VALUE =================================================//
-	    	String[] attributelistData = new String[]{"Select AND,OR","AND", "OR"};
+	    	String[] attributelistData = new String[]{"Select AND, OR","AND", "OR"};
 	        
 	        JComboBox<String> conditioncomboBox = new JComboBox<String>(attributelistData);
 	        String[] condition = new String[1];
@@ -528,6 +528,7 @@ public class GUI {
 	    	    public void actionPerformed(ActionEvent e) {
 	    	    	String movieResult = "";
 	    	    	String userResult = "";
+	    	    	String query = "";
 	    	    	for (int i = 0; i < clickedMovieresult.size(); i++) {
 						String movieID = clickedMovieresult.get(i);
 						if (i == 0) {
@@ -541,16 +542,22 @@ public class GUI {
 						}
 	            	}
 	    	    	
-	    	    		
-	    	    	String query = "SELECt ur.userID \n"+ 
-	    	    					"FROM USER_RATEDMOVIES ur, MOVIES m \n"+
-	    	    					"WHERE ur.movieID = m.id \n" +
-	    	    					movieResult;
-	    	    	if (movieResult.length() > 0 && condition[0].equals("OR")) {
-	    	    			query += ")";
+	    	    	if (clickedMovieresult.size() > 0)	{
+	    	    		query = "SELECt ur.userID \n"+ 
+    	    					"FROM USER_RATEDMOVIES ur, MOVIES m \n"+
+    	    					"WHERE ur.movieID = m.id \n" +
+    	    					movieResult;
+		    	    	if (movieResult.length() > 0 && condition[0].equals("OR")) {
+		    	    			query += ")";
+		    	    	}
+    	    			query += "GROUP BY ur.userID \n"+
+    	    					 "ORDER BY ur.userID";
 	    	    	}
-	    	    			query += "GROUP BY ur.userID \n"+
-	    	    					 "ORDER BY ur.userID";
+	    	    	else {
+	    	    		query = "";
+	    	    	}
+	    	    	
+	    	    			System.out.println(query);
 	    	    			
 	    	    	try {
 						ResultSet GetUserResult = con.createStatement().executeQuery(query);
