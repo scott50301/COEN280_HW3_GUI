@@ -248,7 +248,7 @@ public class GUI {
 	    	
 	    	
 	    	JScrollPane jp_movie_resulty = new JScrollPane(movieresult_checkBoxList);
-	    	jp_movie_resulty.setBounds(920, 50, 300, 400);
+	    	jp_movie_resulty.setBounds(920, 50, 400, 400);
 	    	frame.add(jp_movie_resulty);
 	    	
 	    	/*	  
@@ -315,7 +315,7 @@ public class GUI {
 	    	    	String movie_result = "";
 	    	    	String startdate = "";
 	    	    	String enddate = "";
-	    	    	
+	    	    	clickedMovieresult.clear();
 	    	    	movieresult_model.removeAllElements();
 	    	    	movieresultdata.clear();
 	    	    	//genres
@@ -413,7 +413,7 @@ public class GUI {
 					
 					//Built query string
 					String query =	"SELECT m.id, m.title , m.year, m.rtAudienceRating,m. rtAudienceNumRatings, mg.genre, mc.country \n" + 
-									"FROM MOVIE m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg";
+									"FROM MOVIES m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg";
 					if (tags.length() > 0 || tagsweights.length() > 0 ) {
 							query += ", TAGS t, MOVIE_TAGS mt ";
 					} 
@@ -526,7 +526,47 @@ public class GUI {
 
 	    	    @Override
 	    	    public void actionPerformed(ActionEvent e) {
+	    	    	String movieResult = "";
+	    	    	String userResult = "";
+	    	    	for (int i = 0; i < clickedMovieresult.size(); i++) {
+						String movieID = clickedMovieresult.get(i);
+						if (i == 0) {
+							movieResult += "AND ";
+							if (condition[0].equals("OR"))
+								movieResult += "(";
+							movieResult += " ur.userID IN (SELECT ur.userID FROM USER_RATEDMOVIES ur WHERE ur.movieID =  "+movieID+") \n";
+						}
+						else {
+							movieResult += condition[0]+" ur.userID IN (SELECT ur.userID FROM USER_RATEDMOVIES ur WHERE ur.movieID =  "+movieID+") \n";
+						}
+	            	}
 	    	    	
+	    	    		
+	    	    	String query = "SELECt ur.userID \n"+ 
+	    	    					"FROM USER_RATEDMOVIES ur, MOVIES m \n"+
+	    	    					"WHERE ur.movieID = m.id \n" +
+	    	    					movieResult;
+	    	    	if (movieResult.length() > 0 && condition[0].equals("OR")) {
+	    	    			query += ")";
+	    	    	}
+	    	    			query += "GROUP BY ur.userID \n"+
+	    	    					 "ORDER BY ur.userID";
+	    	    			
+	    	    	try {
+						ResultSet GetUserResult = con.createStatement().executeQuery(query);
+						while (GetUserResult.next()) {
+							String userID = GetUserResult.getString("userID");
+							userResult += userID + "\n";
+;						}
+						
+						jt_user_result.setText("");
+						jt_user_result.setFont(new Font("Serif", Font.BOLD, 20));
+						jt_user_result.append(userResult);
+						
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 	    	    }
 	    	});
 	    	genrecheckBoxList.addMouseListener(new MouseAdapter() {
@@ -571,18 +611,18 @@ public class GUI {
 								genres[0] += "And ";
 								if (condition[0].equals("OR"))
 									genres[0] += "(";
-								genres[0] += "m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" +
+								genres[0] += "m.id in (Select m.id from MOVIE_GENRES mg, MOVIES m WHERE mg.movieID = m.id  \r\n" +
 									"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
 							}
 							else {
-								genres[0] += condition[0]+" m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" + 
+								genres[0] += condition[0]+" m.id in (Select m.id from MOVIE_GENRES mg, MOVIES m WHERE mg.movieID = m.id  \r\n" + 
 										"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
 								
 							}
 								
 						}
 		            	String query = "SELECT mc.country \n" + 
-								"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m \n" + 
+								"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIES m \n" + 
 								"WHERE mg.movieID = m.id \n" + 
 								"AND mc.movieID = m.id \n" + 
 								genres[0]+"\n";
@@ -663,11 +703,11 @@ public class GUI {
 							genres[0] += "And ";
 							if (condition[0].equals("OR"))
 								genres[0] += "(";
-							genres[0] += "m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" +
+							genres[0] += "m.id in (Select m.id from MOVIE_GENRES mg, MOVIES m WHERE mg.movieID = m.id  \r\n" +
 								"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
 						}
 						else {
-							genres[0] += condition[0]+" m.id in (Select m.id from MOVIE_GENRES mg, MOVIE m WHERE mg.movieID = m.id  \r\n" + 
+							genres[0] += condition[0]+" m.id in (Select m.id from MOVIE_GENRES mg, MOVIES m WHERE mg.movieID = m.id  \r\n" + 
 									"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
 							
 						}
@@ -681,18 +721,18 @@ public class GUI {
 								countires[0] += "And ";
 								if (condition[0].equals("OR"))
 									countires[0] += "(";
-								countires[0] += " m.id in (Select m.id from MOVIE_COUNTRIES mc, MOVIE m WHERE mc.movieID = m.id  \r\n" +
+								countires[0] += " m.id in (Select m.id from MOVIE_COUNTRIES mc, MOVIES m WHERE mc.movieID = m.id  \r\n" +
 									"And mc.COUNTRY =  '"+clickedCountry.get(i)+"') ";
 							}
 							else {
-								countires[0] += condition[0]+" m.id in (Select m.id from MOVIE_COUNTRIES mc, MOVIE m WHERE mc.movieID = m.id  \r\n" + 
+								countires[0] += condition[0]+" m.id in (Select m.id from MOVIE_COUNTRIES mc, MOVIES m WHERE mc.movieID = m.id  \r\n" + 
 										"And mc.COUNTRY =  '"+clickedCountry.get(i)+"') ";
 								
 							}
 		            	}
 							
 		            	String query = "SELECT t.id, t.value \n" + 
-								"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE m, TAGS t, MOVIE_TAGS mt \n" + 
+								"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIES m, TAGS t, MOVIE_TAGS mt \n" + 
 								"WHERE mg.movieID = m.id \n" + 
 								"AND mc.movieID = m.id \n" + 
 								"AND mt.movieID = m.id \n"+
@@ -712,7 +752,7 @@ public class GUI {
 								
 								
 						String actor_query = "Select ma.actorName \n" + 
-								"from MOVIE m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE_ACTORS ma \n" + 
+								"from MOVIES m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE_ACTORS ma \n" + 
 								"where mg.movieID = m.id \n" + 
 								"AND mc.movieID = m.id \n" + 
 								"AND ma.movieID = m.id \n" + 
@@ -730,7 +770,7 @@ public class GUI {
 								//System.out.println(query2);
 								
 						String director_query = "Select md.directorName \n" + 
-								"from MOVIE m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE_DIRECTORS md \n" + 
+								"from MOVIES m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE_DIRECTORS md \n" + 
 								"where mg.movieID = m.id \n" + 
 								"AND mc.movieID = m.id \n" + 
 								"AND md.movieID = m.id \n" + 
