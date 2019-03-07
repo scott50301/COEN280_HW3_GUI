@@ -577,7 +577,7 @@ public class GUI {
 		    	    	}
     	    			query += "GROUP BY ur.userID \n"+
     	    					 "ORDER BY ur.userID";
-	    	    	
+	    	    	System.out.println(query);
 	    	    	
 	    	    			
 	    	    	try {
@@ -595,6 +595,9 @@ public class GUI {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 						}
+	    	    	} else {
+	    	    		jt_user_result.setText("");
+						
 	    	    	}
 	    	    }
 	    	});
@@ -742,6 +745,16 @@ public class GUI {
 	            	settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
 							actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
 							actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
+	            	actor1_model.removeAllElements();
+					actor2_model.removeAllElements();
+					actor3_model.removeAllElements();
+					actor4_model.removeAllElements();
+					director_model.removeAllElements();
+					actor1_model.addElement("");
+					actor2_model.addElement("");
+					actor3_model.addElement("");
+					actor4_model.addElement("");
+					director_model.addElement("");	
 	            	if (clickedCountry.size() > 0) {
 		            	countires[0] = "";
 		            	for (int i = 0; i < clickedCountry.size(); i++) {
@@ -760,12 +773,7 @@ public class GUI {
 		            	}
 							
 		            	
-		            	actor1_model.removeAllElements();
-						actor2_model.removeAllElements();
-						actor3_model.removeAllElements();
-						actor4_model.removeAllElements();
-						director_model.removeAllElements();
-								
+		            		
 						String actor_query = "Select ma.actorName \n" + 
 								"from MOVIES m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE_ACTORS ma \n" + 
 								"where mg.movieID = m.id \n" + 
@@ -823,11 +831,7 @@ public class GUI {
 									directorlistData.add(director);  	
 							}
 							
-							actor1_model.addElement("");
-							actor2_model.addElement("");
-							actor3_model.addElement("");
-							actor4_model.addElement("");
-							director_model.addElement("");
+							
 							for (String actor : actorlistData) {
 								actor1_model.addElement(actor);
 								actor2_model.addElement(actor);
