@@ -153,13 +153,12 @@ public class GUI {
 	    	lb_year_from.setFont(new Font("Arial", Font.PLAIN, 16));
 	    	frame.add(lb_year_from);
 	    	
-	    	datepicker dateChooser1 = datepicker.getInstance("yyyy-MM-dd");
-
-			JTextField showDate1 = new JTextField("Click");
-			dateChooser1.register(showDate1);
-			showDate1.setBounds(70, 460, 150, 30);
-			dateChooser1.setBounds(70, 460, 150, 30);
-	        frame.add(dateChooser1);
+	    	datepicker startDateChooser = datepicker.getInstance("yyyy-MM-dd");
+			JTextField showStartDate = new JTextField("Click to select date");
+			startDateChooser.register(showStartDate);
+			showStartDate.setEditable(false);
+			showStartDate.setBounds(70, 460, 150, 30);
+	        frame.add(showStartDate);
 
 	    	/*
 	    	DatePicker start_date = getDatePicker();
@@ -171,6 +170,14 @@ public class GUI {
 	        lb_year_to.setBounds(20,500,50,50);
 	        lb_year_to.setFont(new Font("Arial", Font.PLAIN, 16));
 	    	frame.add(lb_year_to);
+	    	
+	    	datepicker endDateChooser = datepicker.getInstance("yyyy-MM-dd");
+			JTextField showEndDate = new JTextField("Click to select date");
+			showEndDate.setEditable(false);
+			endDateChooser.register(showEndDate);
+			showEndDate.setBounds(70, 510, 150, 30);
+	        frame.add(showEndDate);
+
 	    	/*
 	        DatePicker end_date = getDatePicker();
 	        end_date.setBounds(70, 510, 150, 30);
@@ -208,16 +215,7 @@ public class GUI {
 	    	
 	    	actor4comboBox.setBounds(470,220,200,30);
 	    	frame.add(actor4comboBox);
-	    	/*
-	    	actor2textField.setBounds(470,140,150,30);
-	    	frame.add(actor2textField);
 	    	
-	    	actor3textField.setBounds(470,180,150,30);
-	    	frame.add(actor3textField);
-	    	
-	    	actor4textField.setBounds(470,220,150,30);
-	    	frame.add(actor4textField);
-	    	*/
 	    	JLabel lb_director = new JLabel("Director");
 	    	lb_director.setBounds(470,270,200,50);
 	    	lb_director.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -225,10 +223,7 @@ public class GUI {
 	    	
 	    	directorcomboBox.setBounds(470,320,200,30);
 	    	frame.add(directorcomboBox);
-	    	/*
-	    	directortextField.setBounds(470,320,150,30);
-	    	frame.add(directortextField);
-	    	*/
+	    	
 	    	//Tags
 	    	JLabel lb_tags = new JLabel("Tags Ids and Values");
 	    	lb_tags.setBounds(680,10,200,50);
@@ -563,12 +558,8 @@ public class GUI {
 		    	    	}
     	    			query += "GROUP BY ur.userID \n"+
     	    					 "ORDER BY ur.userID";
-	    	    	}
-	    	    	else {
-	    	    		query = "";
-	    	    	}
 	    	    	
-	    	    			System.out.println(query);
+	    	    	
 	    	    			
 	    	    	try {
 						ResultSet GetUserResult = con.createStatement().executeQuery(query);
@@ -581,10 +572,11 @@ public class GUI {
 						jt_user_result.setFont(new Font("Serif", Font.BOLD, 20));
 						jt_user_result.append(userResult);
 						
-					} catch (SQLException e1) {
+						} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					}
+						}
+	    	    	}
 	    	    }
 	    	});
 	    	genrecheckBoxList.addMouseListener(new MouseAdapter() {
@@ -622,6 +614,12 @@ public class GUI {
 	            	chosenactors.clear();
 	            	directorlistData.clear();
 	            	chosendirector.clear();
+	            	actor1_model.addElement("");
+					actor2_model.addElement("");
+					actor3_model.addElement("");
+					actor4_model.addElement("");
+					director_model.addElement("");
+					System.out.println(showStartDate.getText());
 	            	if (clickedGenre.size() > 0) {
 		            	genres[0] = "";
 		            	for (int i = 0; i < clickedGenre.size(); i++) {

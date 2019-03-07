@@ -37,7 +37,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import java.awt.event.MouseMotionListener;
-
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
@@ -288,8 +288,6 @@ public class datepicker extends JPanel {
 
 		this.showDate = showDate;
 
- 
-
 		showDate.setRequestFocusEnabled(true);
 
 		showDate.addMouseListener(new MouseAdapter() {
@@ -302,13 +300,15 @@ public class datepicker extends JPanel {
 
 		});
 
-		this.setBackground(Color.WHITE);
 
+		this.setBackground(Color.WHITE);
+		
 		this.add(showDate, BorderLayout.CENTER);
 
-		this.setPreferredSize(new Dimension(200, 30));
+		this.setPreferredSize(new Dimension(295, 25));
 
 		this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		
 
 		showDate.addMouseListener(new MouseAdapter() {
 
@@ -391,7 +391,7 @@ public class datepicker extends JPanel {
 			}
 
 		});
-
+		
 	}
 
  
@@ -435,7 +435,25 @@ public class datepicker extends JPanel {
 	}
 
  
+	private void clear() {
 
+		//TODO add other components here
+
+		if (showDate instanceof JTextField) {
+
+			((JTextField) showDate).setText("Click to select date");
+
+		}else if (showDate instanceof JLabel) {
+
+			((JLabel) showDate).setText("Click to select date");
+
+		}
+
+ 
+
+		hidePanel();
+
+	}
 	  
 
 	private void hidePanel() {
@@ -465,6 +483,7 @@ public class datepicker extends JPanel {
 		}
 
 		Point show = new Point(0, showDate.getHeight());
+		
 
 		SwingUtilities.convertPointToScreen(show, showDate);
 
@@ -529,11 +548,11 @@ public class datepicker extends JPanel {
 
 			yearleft = new JLabel("  <<", JLabel.CENTER);
 
-			yearleft.setToolTipText("銝�撟�");
+			yearleft.setToolTipText("last year");
 
 			yearright = new JLabel(">>  ", JLabel.CENTER);
 
-			yearright.setToolTipText("銝�撟�");
+			yearright.setToolTipText("next year");
 
 			yearleft.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
 
@@ -543,11 +562,11 @@ public class datepicker extends JPanel {
 
 			monthleft = new JLabel("  <", JLabel.RIGHT);
 
-			monthleft.setToolTipText("Times New Roman");
+			monthleft.setToolTipText("lest month");
 
 			monthright = new JLabel(">  ", JLabel.LEFT);
 
-			monthright.setToolTipText("Times New Roman");
+			monthright.setToolTipText("next month");
 
 			monthleft.setBorder(BorderFactory.createEmptyBorder(2, 30, 0, 0));
 
@@ -758,9 +777,9 @@ public class datepicker extends JPanel {
  
 
 		private void updateDate() {
-
-			center.setText(select.get(Calendar.YEAR) + "Year" + (select.get(Calendar.MONTH) + 1) + "Month");
-
+			DateFormatSymbols dfs = new DateFormatSymbols();
+			center.setText(select.get(Calendar.YEAR) + "  " +dfs.getMonths()[(select.get(Calendar.MONTH)) ] + "  ");
+			
 		}
 
 	}
@@ -769,7 +788,7 @@ public class datepicker extends JPanel {
 
 	private class JP2 extends JPanel {
 
-		private static final long serialVersionUID = -8176264838786175724L;
+		//private static final long serialVersionUID = -8176264838786175724L;
 
  
 
@@ -785,7 +804,7 @@ public class datepicker extends JPanel {
 
 			g.setFont(font);
 
-			g.drawString(" Sun.   Mon.   Tues   Wed.   Thur.   Fri.   Sat.", 5, 10);
+			g.drawString("  Sun.      Mon.      Tues       Wed.      Thur.      Fri.       Sat.", 5, 10);
 
 			g.drawLine(0, 15, getWidth(), 15);
 
@@ -805,7 +824,7 @@ public class datepicker extends JPanel {
 
 	private class JP3 extends JPanel {
 
-		private static final long serialVersionUID = 43157272447522985L;
+		//private static final long serialVersionUID = 43157272447522985L;
 
  
 
@@ -873,7 +892,7 @@ public class datepicker extends JPanel {
 
 	private class MyLabel extends JLabel implements Comparator<MyLabel>, MouseListener, MouseMotionListener {
 
-		private static final long serialVersionUID = 3668734399227577214L;
+		//private static final long serialVersionUID = 3668734399227577214L;
 
 		private int year, month, day;
 
@@ -1247,7 +1266,7 @@ public class datepicker extends JPanel {
 
 	private class JP4 extends JPanel {
 
-		private static final long serialVersionUID = -6391305687575714469L;
+		//private static final long serialVersionUID = -6391305687575714469L;
 
  
 
@@ -1262,11 +1281,12 @@ public class datepicker extends JPanel {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 			final JLabel jl = new JLabel("Today: " + sdf.format(new Date()));
-
+			
+			final JLabel clear = new JLabel("Clear");
 			jl.setToolTipText("Click to select today");
 
 			this.add(jl, BorderLayout.CENTER);
-
+			this.add(clear, BorderLayout.EAST);
 			jl.addMouseListener(new MouseAdapter() {
 
 				public void mouseEntered(MouseEvent me) {
@@ -1310,6 +1330,50 @@ public class datepicker extends JPanel {
 				}
 
 			});
+			
+			clear.addMouseListener(new MouseAdapter() {
+
+				public void mouseEntered(MouseEvent me) {
+
+					clear.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+					clear.setForeground(Color.RED);
+
+				}
+
+ 
+
+				public void mouseExited(MouseEvent me) {
+
+					clear.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
+					clear.setForeground(Color.BLACK);
+
+				}
+
+ 
+
+				public void mousePressed(MouseEvent me) {
+
+					clear.setForeground(Color.WHITE);
+
+					//select.setTime(new Date(""));
+
+					refresh();
+
+					clear();
+
+				}
+
+ 
+
+				public void mouseReleased(MouseEvent me) {
+
+					jl.setForeground(Color.BLACK);
+
+				}
+
+			});
 
 		}
 
@@ -1323,37 +1387,5 @@ public class datepicker extends JPanel {
 
 	}
 
- /*
 
-	public static void main(String[] args) {
-
-		practice dateChooser1 = practice.getInstance("yyyy-MM-dd");
-
-		JTextField showDate1 = new JTextField("�������");
-
-
-
- 
-
-		dateChooser1.register(showDate1);
-
-
-
- 
-
-		JFrame jf = new JFrame("瘚�����");
-
-		jf.add(showDate1, BorderLayout.NORTH);
-
-
-		jf.pack();
-
-		jf.setLocationRelativeTo(null);
-
-		jf.setVisible(true);
-
-		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-	}
-*/
 }
