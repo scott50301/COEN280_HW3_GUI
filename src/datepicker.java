@@ -419,13 +419,13 @@ public class datepicker extends JPanel {
 		//TODO add other components here
 
 		if (showDate instanceof JTextField) {
-
 			((JTextField) showDate).setText(sdf.format(select.getTime()));
-
+			
+			
 		}else if (showDate instanceof JLabel) {
 
 			((JLabel) showDate).setText(sdf.format(select.getTime()));
-
+			
 		}
 
  

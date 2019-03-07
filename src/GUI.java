@@ -7,8 +7,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -37,6 +41,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import com.eltima.components.ui.DatePicker;
 
@@ -74,6 +80,9 @@ public class GUI {
 	    		genremodel.addElement(new JCheckBox(s));
 	    	}
 	    
+	    	//================================================= MOVIE YEAR =================================================//
+	    	String[] date_from = new String[] {""};
+	    	String[] date_to = new String[] {""};
 	    	
 	    	//================================================= COUNTRY =================================================//
 	    	List<String> countrydata = new ArrayList<>();
@@ -98,6 +107,13 @@ public class GUI {
 	        JComboBox<String> actor3comboBox = new JComboBox<String>(actor3_model);
 	        JComboBox<String> actor4comboBox = new JComboBox<String>(actor4_model);
 	        JComboBox<String> directorcomboBox = new JComboBox<String>(director_model);
+	      
+        	actor1_model.addElement("");
+			actor2_model.addElement("");
+			actor3_model.addElement("");
+			actor4_model.addElement("");
+			director_model.addElement("");
+
 	    	//================================================= TAG =================================================//
 	    	List<String> tagdata = new ArrayList<>();
 	    	List<String> clickedTag = new ArrayList<>();
@@ -313,6 +329,7 @@ public class GUI {
 	    	    public void actionPerformed(ActionEvent e) {
 	    	        //your actions
 	    	    	String genres = "";
+	    	    	String movieyear = "";
 	    	    	String countries = "";
 	    	    	String actors = "";
 	    	    	String directors = "";
@@ -338,7 +355,13 @@ public class GUI {
 						}
 							
 					}
-					
+					//Year
+					if (date_from[0].length() > 0) {
+	            		movieyear += "AND m.year >=" + date_from[0].split("-")[0] + " \n";
+	            	}
+	            	if (date_to[0].length() > 0) {
+	            		movieyear += "AND m.year <=" + date_to[0].split("-")[0] + " \n";
+	            	}
 					//countries
 					for (int i = 0; i < clickedCountry.size(); i++) {
 						if (i == 0) {
@@ -485,7 +508,8 @@ public class GUI {
 								
 							}
 					}
-							query += "GROUP BY m.id, m.title , m.year, m.rtAudienceRating,m. rtAudienceNumRatings, mg.genre, mc.country \n"+
+							query += movieyear+
+									 "GROUP BY m.id, m.title , m.year, m.rtAudienceRating,m. rtAudienceNumRatings, mg.genre, mc.country \n"+
 									 "ORDER BY m.id ";
 							
 							//System.out.println(query);	
@@ -507,12 +531,7 @@ public class GUI {
 						jt.setText("");
 			            jt.setFont(f);
 			            jt.append(query); 
-			            
-			            /*
-						jt_movie_result.setText("");
-						jt_movie_result.setFont(new Font("Serif", Font.BOLD, 20));
-						jt_movie_result.append(movie_result);
-						*/
+			           
 						
 						for (String movieresult : movieresultdata) {
 							movieresult_model.addElement(new JCheckBox(movieresult));
@@ -601,9 +620,7 @@ public class GUI {
 	            	else {
 	            		clickedGenre.remove(item.getLabel());	
 	            	}
-	            	
 	            	country_model.removeAllElements();
-	            	tag_model.removeAllElements();
 	            	actor1_model.removeAllElements();
 					actor2_model.removeAllElements();
 					actor3_model.removeAllElements();
@@ -619,8 +636,8 @@ public class GUI {
 					actor3_model.addElement("");
 					actor4_model.addElement("");
 					director_model.addElement("");
-					System.out.println(showStartDate.getText());
-	            	if (clickedGenre.size() > 0) {
+					String movieyear = "";
+	            	if (clickedGenre.size() > 0 || date_from[0].length() > 0 || date_to[0].length() > 0) {
 		            	genres[0] = "";
 		            	for (int i = 0; i < clickedGenre.size(); i++) {
 							if (i == 0) {
@@ -637,6 +654,12 @@ public class GUI {
 							}
 								
 						}
+		            	if (date_from[0].length() > 0) {
+		            		movieyear += "AND m.year >=" + date_from[0].split("-")[0] + " \n";
+		            	}
+		            	if (date_to[0].length() > 0) {
+		            		movieyear += "AND m.year <=" + date_to[0].split("-")[0] + " \n";
+		            	}
 		            	String query = "SELECT mc.country \n" + 
 								"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIES m \n" + 
 								"WHERE mg.movieID = m.id \n" + 
@@ -644,11 +667,12 @@ public class GUI {
 								genres[0]+"\n";
 						if (condition[0].equals("OR"))
 								query += ")";
-								query += "GROUP BY mc.country \n"+
-								"ORDER BY mc.country ";
+								query += movieyear+ 
+										"GROUP BY mc.country \n"+
+										"ORDER BY mc.country ";
 		            	
 						
-							
+						
 						try {
 							ResultSet GetCountries = con.createStatement().executeQuery(query);
 							countrydata.clear();
@@ -669,7 +693,9 @@ public class GUI {
 								country_model.addElement(new JCheckBox(country));
 							}
 							
-							
+							settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
+									actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+									actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 						} catch (SQLException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -684,6 +710,67 @@ public class GUI {
 				
 	      	});
 	    	
+
+	    
+	    	showStartDate.getDocument().addDocumentListener(new DocumentListener() {
+	    			public   void changedUpdate(DocumentEvent e) {
+	    			  	//System.out.println(showStartDate.getText());
+	    			}
+
+					@Override
+					public  void insertUpdate(DocumentEvent arg0) {
+						// TODO Auto-generated method stub
+						if(!showStartDate.getText().equals("Click to select date")) {
+							actor1_model.removeAllElements();
+							actor2_model.removeAllElements();
+							actor3_model.removeAllElements();
+							actor4_model.removeAllElements();
+							director_model.removeAllElements();
+			            	actor1_model.addElement("");
+							actor2_model.addElement("");
+							actor3_model.addElement("");
+							actor4_model.addElement("");
+							director_model.addElement("");
+							date_from[0] = showStartDate.getText();
+						} else {
+							date_from[0] = "";
+							
+						}
+						System.out.println(date_from[0]);
+						settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
+								actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+								actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
+					}
+					@Override
+					public void removeUpdate(DocumentEvent arg0) {
+						// TODO Auto-generated method stub
+						//System.out.println(showStartDate.getText());
+					}
+	    			  
+	    	});
+	    	
+	    	showEndDate.getDocument().addDocumentListener(new DocumentListener() {
+    			public   void changedUpdate(DocumentEvent e) {
+    			  	//System.out.println(showStartDate.getText());
+    			}
+
+				@Override
+				public  void insertUpdate(DocumentEvent arg0) {
+					// TODO Auto-generated method stub
+					if(!showEndDate.getText().equals("Click to select date")) {
+						date_to[0] = showEndDate.getText();
+					} else {
+						date_to[0] = "";
+					}
+				}
+
+				@Override
+				public void removeUpdate(DocumentEvent arg0) {
+					// TODO Auto-generated method stub
+					//System.out.println(showStartDate.getText());
+			}
+    			  
+    	});
 	    	country_checkBoxList.addMouseListener(new MouseAdapter() {
 	    		public void mouseClicked(MouseEvent event) {
 	 
@@ -707,12 +794,7 @@ public class GUI {
 	            	else {
 	            		clickedCountry.remove(item.getLabel());
 	            	}
-	            	tag_model.removeAllElements();
-	            	actor1_model.removeAllElements();
-					actor2_model.removeAllElements();
-					actor3_model.removeAllElements();
-					actor4_model.removeAllElements();
-					director_model.removeAllElements();
+	            	
 	            	genres[0] = "";
 	            	for (int i = 0; i < clickedGenre.size(); i++) {
 						if (i == 0) {
@@ -747,25 +829,14 @@ public class GUI {
 							}
 		            	}
 							
-		            	String query = "SELECT t.id, t.value \n" + 
-								"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIES m, TAGS t, MOVIE_TAGS mt \n" + 
-								"WHERE mg.movieID = m.id \n" + 
-								"AND mc.movieID = m.id \n" + 
-								"AND mt.movieID = m.id \n"+
-								"AND mt.TAGID = t.id \n"+
-								genres[0]+"\n";
-								
-		            	if (condition[0].equals("OR")) {
-									query += ")";
-								}
-								
-								query += countires[0]+"\n";
-								if (condition[0].equals("OR")) {
-									query += ")";	
-								}	
-								query += "GROUP BY t.id, t.value \n"+
-								"ORDER BY t.id ";
-								
+		            	settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
+								actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+								actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
+		            	actor1_model.removeAllElements();
+						actor2_model.removeAllElements();
+						actor3_model.removeAllElements();
+						actor4_model.removeAllElements();
+						director_model.removeAllElements();
 								
 						String actor_query = "Select ma.actorName \n" + 
 								"from MOVIES m, MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIE_ACTORS ma \n" + 
@@ -803,7 +874,6 @@ public class GUI {
 								"ORDER BY md.directorName ";
 								//System.out.println(query2);
 						try {
-							ResultSet GetTags = con.createStatement().executeQuery(query);
 							ResultSet GetActors = con.createStatement().executeQuery(actor_query);
 							ResultSet GetDirector = con.createStatement().executeQuery(director_query);
 							tagdata.clear();
@@ -811,12 +881,7 @@ public class GUI {
 							chosenactors.clear();
 							directorlistData.clear();
 							chosendirector.clear();
-							while (GetTags.next()) {
-							  	String tagid = GetTags.getString("id");
-							  	String tagvalue = GetTags.getString("value");
-							  	tagdata.add(tagid+" "+tagvalue);
-							  	
-							}
+						
 							
 							while (GetActors.next()) {
 								String actor = GetActors.getString("actorName");
@@ -831,9 +896,7 @@ public class GUI {
 							}
 							
 						  	
-							for (String tag : tagdata) {
-								tag_model.addElement(new JCheckBox(tag));
-							}
+
 							
 							actor1_model.addElement("");
 							actor2_model.addElement("");
@@ -1063,8 +1126,200 @@ public class GUI {
 	        });
 	   }
 		
-	
-		
+
+
+
+
+
+
+
+
+
+
+		protected static void settag(Connection con, List<String> clickedGenre, String date_from, String date_to, 
+				 List<String> clickedCountry, String actor1, String actor2, String actor3, 
+				String actor4, String director, String condition,DefaultListModel<JCheckBox> tag_model) {
+		// TODO Auto-generated method stub
+			String genres = "";
+	    	String movieyear = "";
+	    	String countries = "";
+	    	String actors = "";
+	    	String directors = "";
+	    	String tags = "";
+	    	String tagsweights = "";
+	    	String movie_result = "";
+	    	String startdate = "";
+	    	String enddate = "";
+	    	List<String> chosenactors = new ArrayList<>();
+	    	List<String> tagdata = new ArrayList<>();
+	    	tag_model.removeAllElements();
+			for (int i = 0; i < clickedGenre.size(); i++) {
+				if (i == 0) {
+					genres += "AND ";
+					if (condition.equals("OR"))
+						genres += "(";
+					genres += "m.id in (SELECT mg.movieID FROM MOVIE_GENRES mg WHERE mg.GENRE =  '"+clickedGenre.get(i)+"') \n";
+				}
+				else {
+					genres += condition+" m.id IN (SELECT mg.movieID FROM MOVIE_GENRES mg WHERE  mg.GENRE =  '"+clickedGenre.get(i)+"') \n";
+					
+				}
+					
+			}
+			//Year
+			if (date_from.length() > 0) {
+        		movieyear += "AND m.year >=" + date_from.split("-")[0] + " \n";
+        	}
+        	if (date_to.length() > 0) {
+        		movieyear += "AND m.year <=" + date_to.split("-")[0] + " \n";
+        	}
+			//countries
+			for (int i = 0; i < clickedCountry.size(); i++) {
+				if (i == 0) {
+					countries += "AND ";
+					if (condition.equals("OR"))
+						countries += "(";
+					countries += " m.id IN (SELECT mc.movieID FROM MOVIE_COUNTRIES mc WHERE mc.COUNTRY =  '"+clickedCountry.get(i)+"') \n";
+				}
+				else {
+					countries += condition+" m.id IN (SELECT mc.movieID FROM MOVIE_COUNTRIES mc WHERE  mc.COUNTRY =  '"+clickedCountry.get(i)+"') \n";
+					
+				}
+        	}
+			
+			
+			
+			//Actors
+			if (actor1.length() > 0) {
+				chosenactors.add(actor1);
+			}
+			if (actor2.length() > 0) {
+				chosenactors.add(actor2);
+			}
+			if (actor3.length() > 0) {
+				chosenactors.add(actor3);
+			}
+			if (actor4.length() > 0) {
+				chosenactors.add(actor4);
+			}
+			for (int i = 0; i < chosenactors.size(); i++) {
+				String actorName = chosenactors.get(i);
+				if (i == 0) {
+					actors += "AND ";
+					if (condition.equals("OR"))
+						actors += "(";
+					actors += " m.id IN (SELECT ma.movieID FROM MOVIE_ACTORS ma WHERE ma.actorname =  '"+actorName+"') \n";
+				}
+				else {
+					actors += condition+" m.id IN (SELECT ma.movieID FROM MOVIE_ACTORS ma WHERE ma.actorname =  '"+actorName+"') \n";
+				}
+        	}
+			
+			//Director
+			
+			for (int i = 0; i < director.length(); i++) {
+				String directorName = director;
+				if (i == 0) {
+					directors += "AND ";
+					if (condition.equals("OR"))
+						directors += "(";
+					directors += " m.id IN (SELECT md.movieID FROM MOVIE_DIRECTORS md WHERE md.directorName =  '"+directorName+"') \n";
+				}
+				else {
+					directors += condition+" m.id IN (SELECT md.movieID FROM MOVIE_DIRECTORS md WHERE md.directorName =  '"+directorName+"') \n";
+				}
+        	}
+			
+			
+			//Built query string
+			String query =	"SELECT t.id, t.value \n" + 
+							"FROM  MOVIES m, TAGS t, MOVIE_TAGS mt " ;
+			if (genres.length() > 0) {
+				query += ", MOVIE_GENRES mg";
+			}
+			if (countries.length() > 0) {
+				query += ", MOVIE_COUNTRIES mc";
+			}
+			  
+			if (actors.length() > 0) {
+				query += ", MOVIE_ACTORS ma";
+			}
+			if (directors.length() > 0) {
+				query += ", MOVIE_DIRECTORS md";
+			}
+			query += "\n WHERE  mt.movieID = m.id \n"+
+					"AND mt.TAGID = t.id \n";
+					
+			
+			if (genres.length() > 0) {
+				query += "AND mg.movieID = m.id \n";
+			}	
+			if (countries.length() > 0) {
+				query += "AND mc.movieID = m.id \n";
+			}
+
+			if (actors.length() > 0 ) {
+				query += "AND ma.movieID = m.id \n";
+			}
+			if (directors.length() > 0 ) {
+				query += "AND md.movieID = m.id \n";
+			}
+							
+					query += genres;
+			
+			if (condition.equals("OR") && genres.length() > 0) {
+					query += ") \n";
+			}
+			
+					query += countries;
+					
+			if (condition.equals("OR") && countries.length() > 0) {
+					query += ") \n";
+			}
+
+					query += actors;
+			if (condition.equals("OR") && actors.length() > 0) {
+					query += ") \n";
+			}
+					
+					query += directors;
+			if (condition.equals("OR") && directors.length() > 0) {
+						query += ") \n";
+			}
+					query += movieyear+
+							 "GROUP BY t.id, t.value \n"+
+							 "ORDER BY t.id, t.value ";
+        	System.out.println(query);
+        	try {
+				ResultSet GetTags = con.createStatement().executeQuery(query);
+				
+				while (GetTags.next()) {
+				  	String tagid = GetTags.getString("id");
+				  	String tagvalue = GetTags.getString("value");
+				  	tagdata.add(tagid+" "+tagvalue);
+				  	
+				}
+				
+				
+				
+			  	
+				for (String tag : tagdata) {
+					tag_model.addElement(new JCheckBox(tag));
+				}
+				
+				
+
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	
+        	
+		}
+
+
+
 		private static DatePicker getDatePicker() {
 		    final DatePicker datepick;
 		    // 格式
