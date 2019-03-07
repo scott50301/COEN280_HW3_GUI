@@ -41,10 +41,10 @@ import javax.swing.border.EmptyBorder;
 import com.eltima.components.ui.DatePicker;
 
 public class GUI {
-
+	
 	//static JList<CheckboxListItem> countrylist;
 	public static void main(String [ ] args) throws SQLException{
-			
+			datepicker datepicker = new datepicker();
 			Connection con = DriverManager.getConnection( "jdbc:oracle:thin:@localhost:1521:scott50301","system","csk820814");  
 			Statement stmt = null;
 	    	String query = "SELECT GENRE FROM MOVIE_GENRES GROUP BY GENRE ORDER BY GENRE";
@@ -142,6 +142,7 @@ public class GUI {
 	    	frame.add(jp_genre);
 	    	
 	    	//Movie Year
+	    	
 	    	JLabel lb_year = new JLabel("Movie Year");
 	    	lb_year.setBounds(20,410,200,50);
 	    	lb_year.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -152,19 +153,29 @@ public class GUI {
 	    	lb_year_from.setFont(new Font("Arial", Font.PLAIN, 16));
 	    	frame.add(lb_year_from);
 	    	
+	    	datepicker dateChooser1 = datepicker.getInstance("yyyy-MM-dd");
+
+			JTextField showDate1 = new JTextField("Click");
+			dateChooser1.register(showDate1);
+			showDate1.setBounds(70, 460, 150, 30);
+			dateChooser1.setBounds(70, 460, 150, 30);
+	        frame.add(dateChooser1);
+
+	    	/*
 	    	DatePicker start_date = getDatePicker();
 	    	start_date.setBounds(70, 460, 150, 30);
 	        frame.add(start_date);
-	        
+	        */
+	    	
 	        JLabel lb_year_to = new JLabel("to");
 	        lb_year_to.setBounds(20,500,50,50);
 	        lb_year_to.setFont(new Font("Arial", Font.PLAIN, 16));
 	    	frame.add(lb_year_to);
-	    	
+	    	/*
 	        DatePicker end_date = getDatePicker();
 	        end_date.setBounds(70, 510, 150, 30);
 	        frame.add(end_date);
-	        
+	        */
 	        //Country
 	    	JLabel lb_country = new JLabel("Country");
 	    	lb_country.setBounds(250,10,100,50);
@@ -1053,7 +1064,9 @@ public class GUI {
 	            }
 	        });
 	   }
-
+		
+	
+		
 		private static DatePicker getDatePicker() {
 		    final DatePicker datepick;
 		    // 格式
