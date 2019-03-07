@@ -736,7 +736,7 @@ public class GUI {
 							date_from[0] = "";
 							
 						}
-						System.out.println(date_from[0]);
+			
 						settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
 								actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
 								actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
@@ -758,10 +758,26 @@ public class GUI {
 				public  void insertUpdate(DocumentEvent arg0) {
 					// TODO Auto-generated method stub
 					if(!showEndDate.getText().equals("Click to select date")) {
+						actor1_model.removeAllElements();
+						actor2_model.removeAllElements();
+						actor3_model.removeAllElements();
+						actor4_model.removeAllElements();
+						director_model.removeAllElements();
+		            	actor1_model.addElement("");
+						actor2_model.addElement("");
+						actor3_model.addElement("");
+						actor4_model.addElement("");
+						director_model.addElement("");
 						date_to[0] = showEndDate.getText();
 					} else {
 						date_to[0] = "";
+						
 					}
+					
+					settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
+							actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+							actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
+			
 				}
 
 				@Override
@@ -1167,10 +1183,10 @@ public class GUI {
 					
 			}
 			//Year
-			if (date_from.length() > 0) {
+			if (date_from.length() > 0 && !date_from.equals("Click to select date")) {
         		movieyear += "AND m.year >=" + date_from.split("-")[0] + " \n";
         	}
-        	if (date_to.length() > 0) {
+        	if (date_to.length() > 0 && !date_to.equals("Click to select date")) {
         		movieyear += "AND m.year <=" + date_to.split("-")[0] + " \n";
         	}
 			//countries
