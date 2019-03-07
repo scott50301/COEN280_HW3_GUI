@@ -620,94 +620,22 @@ public class GUI {
 	            	else {
 	            		clickedGenre.remove(item.getLabel());	
 	            	}
-	            	country_model.removeAllElements();
-	            	actor1_model.removeAllElements();
-					actor2_model.removeAllElements();
-					actor3_model.removeAllElements();
-					actor4_model.removeAllElements();
-					director_model.removeAllElements();
-	            	clickedCountry.clear();
+	            	
 	            	actorlistData.clear();
 	            	chosenactors.clear();
 	            	directorlistData.clear();
 	            	chosendirector.clear();
-	            	actor1_model.addElement("");
-					actor2_model.addElement("");
-					actor3_model.addElement("");
-					actor4_model.addElement("");
-					director_model.addElement("");
-					String movieyear = "";
-	            	if (clickedGenre.size() > 0 || date_from[0].length() > 0 || date_to[0].length() > 0) {
-		            	genres[0] = "";
-		            	for (int i = 0; i < clickedGenre.size(); i++) {
-							if (i == 0) {
-								genres[0] += "And ";
-								if (condition[0].equals("OR"))
-									genres[0] += "(";
-								genres[0] += "m.id in (Select m.id from MOVIE_GENRES mg, MOVIES m WHERE mg.movieID = m.id  \r\n" +
-									"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
-							}
-							else {
-								genres[0] += condition[0]+" m.id in (Select m.id from MOVIE_GENRES mg, MOVIES m WHERE mg.movieID = m.id  \r\n" + 
-										"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
-								
-							}
-								
-						}
-		            	if (date_from[0].length() > 0) {
-		            		movieyear += "AND m.year >=" + date_from[0].split("-")[0] + " \n";
-		            	}
-		            	if (date_to[0].length() > 0) {
-		            		movieyear += "AND m.year <=" + date_to[0].split("-")[0] + " \n";
-		            	}
-		            	String query = "SELECT mc.country \n" + 
-								"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIES m \n" + 
-								"WHERE mg.movieID = m.id \n" + 
-								"AND mc.movieID = m.id \n" + 
-								genres[0]+"\n";
-						if (condition[0].equals("OR"))
-								query += ")";
-								query += movieyear+ 
-										"GROUP BY mc.country \n"+
-										"ORDER BY mc.country ";
-		            	
-						
-						
-						try {
-							ResultSet GetCountries = con.createStatement().executeQuery(query);
-							countrydata.clear();
-							while (GetCountries.next()) {
-							  	String country = GetCountries.getString("COUNTRY");
-							  	country = country.trim();
-							  	if (country.length() > 0) {
-							  		countrydata.add(country);
-							  	}
-							}
-							
-							
-							
-							//jp_country.revalidate();
-							//country_checkBoxList.revalidate();
-							
-							for (String country : countrydata) {
-								country_model.addElement(new JCheckBox(country));
-							}
-							
-							settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
-									actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
-									actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
-						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-	            	}
-	            	// Repaint cell
-	 
-					list_genre.repaint(list_genre.getCellBounds(index, index));
 	            	
-	            	
+					setcountry(con,clickedGenre, date_from[0], date_to[0],condition[0],clickedCountry,country_model,actor1_model,
+							actor2_model,actor2_model,actor3_model,actor4_model,director_model);
+
+	    		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
+						actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+						actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
+	    		// Repaint cell
+
+				list_genre.repaint(list_genre.getCellBounds(index, index));
 	    		}
-				
 	      	});
 	    	
 
@@ -721,22 +649,14 @@ public class GUI {
 					public  void insertUpdate(DocumentEvent arg0) {
 						// TODO Auto-generated method stub
 						if(!showStartDate.getText().equals("Click to select date")) {
-							actor1_model.removeAllElements();
-							actor2_model.removeAllElements();
-							actor3_model.removeAllElements();
-							actor4_model.removeAllElements();
-							director_model.removeAllElements();
-			            	actor1_model.addElement("");
-							actor2_model.addElement("");
-							actor3_model.addElement("");
-							actor4_model.addElement("");
-							director_model.addElement("");
+							
 							date_from[0] = showStartDate.getText();
 						} else {
 							date_from[0] = "";
 							
 						}
-			
+						setcountry(con,clickedGenre, date_from[0], date_to[0],condition[0],clickedCountry,country_model,actor1_model,
+								actor2_model,actor2_model,actor3_model,actor4_model,director_model);
 						settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
 								actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
 								actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
@@ -758,22 +678,14 @@ public class GUI {
 				public  void insertUpdate(DocumentEvent arg0) {
 					// TODO Auto-generated method stub
 					if(!showEndDate.getText().equals("Click to select date")) {
-						actor1_model.removeAllElements();
-						actor2_model.removeAllElements();
-						actor3_model.removeAllElements();
-						actor4_model.removeAllElements();
-						director_model.removeAllElements();
-		            	actor1_model.addElement("");
-						actor2_model.addElement("");
-						actor3_model.addElement("");
-						actor4_model.addElement("");
-						director_model.addElement("");
+						
 						date_to[0] = showEndDate.getText();
 					} else {
 						date_to[0] = "";
 						
 					}
-					
+					setcountry(con,clickedGenre, date_from[0], date_to[0],condition[0],clickedCountry,country_model,actor1_model,
+							actor2_model,actor2_model,actor3_model,actor4_model,director_model);
 					settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
 							actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
 							actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
@@ -827,7 +739,9 @@ public class GUI {
 						}
 	            	}
 	            	
-	            	
+	            	settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
+							actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+							actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	            	if (clickedCountry.size() > 0) {
 		            	countires[0] = "";
 		            	for (int i = 0; i < clickedCountry.size(); i++) {
@@ -845,9 +759,7 @@ public class GUI {
 							}
 		            	}
 							
-		            	settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
-								actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
-								actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
+		            	
 		            	actor1_model.removeAllElements();
 						actor2_model.removeAllElements();
 						actor3_model.removeAllElements();
@@ -910,9 +822,6 @@ public class GUI {
 								if (director != null && director.length() > 0)
 									directorlistData.add(director);  	
 							}
-							
-						  	
-
 							
 							actor1_model.addElement("");
 							actor2_model.addElement("");
@@ -1142,6 +1051,104 @@ public class GUI {
 	        });
 	   }
 		
+
+
+
+
+
+
+
+
+
+
+		protected static void setcountry(Connection con, List<String> clickedGenre, String date_from, String date_to,
+			String condition,List<String> clickedCountry, DefaultListModel<JCheckBox> country_model, DefaultComboBoxModel<String> actor1_model, DefaultComboBoxModel<String> actor2_model,
+			DefaultComboBoxModel<String> actor2_model2, DefaultComboBoxModel<String> actor3_model, DefaultComboBoxModel<String> actor4_model, DefaultComboBoxModel<String> director_model) {
+		// TODO Auto-generated method stub
+			clickedCountry.clear();
+			country_model.removeAllElements();
+			actor1_model.removeAllElements();
+			actor2_model.removeAllElements();
+			actor3_model.removeAllElements();
+			actor4_model.removeAllElements();
+			director_model.removeAllElements();
+        	actor1_model.addElement("");
+			actor2_model.addElement("");
+			actor3_model.addElement("");
+			actor4_model.addElement("");
+			director_model.addElement("");
+			String genres = "";
+			String movieyear = "";
+			List<String> countrydata = new ArrayList<>();
+        	if (clickedGenre.size() > 0 || date_from.length() > 0 || date_to.length() > 0) {
+            	genres = "";
+            	for (int i = 0; i < clickedGenre.size(); i++) {
+					if (i == 0) {
+						genres += "And ";
+						if (condition.equals("OR"))
+							genres += "(";
+						genres += "m.id in (Select m.id from MOVIE_GENRES mg, MOVIES m WHERE mg.movieID = m.id  \r\n" +
+							"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
+					}
+					else {
+						genres += condition+" m.id in (Select m.id from MOVIE_GENRES mg, MOVIES m WHERE mg.movieID = m.id  \r\n" + 
+								"And mg.GENRE =  '"+clickedGenre.get(i)+"') ";
+						
+					}
+						
+				}
+            	if (date_from.length() > 0) {
+            		movieyear += "AND m.year >=" + date_from.split("-")[0] + " \n";
+            	}
+            	if (date_to.length() > 0) {
+            		movieyear += "AND m.year <=" + date_to.split("-")[0] + " \n";
+            	}
+            	String query = "SELECT mc.country \n" + 
+						"FROM MOVIE_COUNTRIES mc,  MOVIE_GENRES mg, MOVIES m \n" + 
+						"WHERE mg.movieID = m.id \n" + 
+						"AND mc.movieID = m.id \n" + 
+						genres+"\n";
+				if (condition.equals("OR"))
+						query += ")";
+						query += movieyear+ 
+								"GROUP BY mc.country \n"+
+								"ORDER BY mc.country ";
+            	
+				
+				
+				try {
+					ResultSet GetCountries = con.createStatement().executeQuery(query);
+					countrydata.clear();
+					while (GetCountries.next()) {
+					  	String country = GetCountries.getString("COUNTRY");
+					  	country = country.trim();
+					  	if (country.length() > 0) {
+					  		countrydata.add(country);
+					  	}
+					}
+					
+					
+					
+					//jp_country.revalidate();
+					//country_checkBoxList.revalidate();
+					
+					for (String country : countrydata) {
+						country_model.addElement(new JCheckBox(country));
+					}
+					
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+        	}
+        	
+        	
+        	
+		}
+	
+
 
 
 
