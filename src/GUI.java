@@ -1161,11 +1161,6 @@ public class GUI {
 	    	String countries = "";
 	    	String actors = "";
 	    	String directors = "";
-	    	String tags = "";
-	    	String tagsweights = "";
-	    	String movie_result = "";
-	    	String startdate = "";
-	    	String enddate = "";
 	    	List<String> chosenactors = new ArrayList<>();
 	    	List<String> tagdata = new ArrayList<>();
 	    	tag_model.removeAllElements();
