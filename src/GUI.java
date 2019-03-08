@@ -250,7 +250,7 @@ public class GUI {
 	    	jp_tag.setBounds(680, 50, 200, 400);
 	    	frame.add(jp_tag);
 	    	
-	    	JLabel lb_tags_weight = new JLabel("Tags Weigth:");
+	    	JLabel lb_tags_weight = new JLabel("Tags Weight:");
 	    	lb_tags_weight.setBounds(680,450,200,50);
 	    	lb_tags_weight.setFont(new Font("Arial", Font.PLAIN, 20));
 	    	frame.add(lb_tags_weight);
@@ -632,7 +632,7 @@ public class GUI {
 					setcountry(con,clickedGenre, date_from[0], date_to[0],condition[0],clickedCountry,country_model,actor1_model,
 							actor2_model,actor2_model,actor3_model,actor4_model,director_model);
 
-	    		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
+	    		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag,actor1comboBox.getSelectedItem().toString(), 
 						actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
 						actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	    		// Repaint cell
@@ -660,7 +660,7 @@ public class GUI {
 						}
 						setcountry(con,clickedGenre, date_from[0], date_to[0],condition[0],clickedCountry,country_model,actor1_model,
 								actor2_model,actor2_model,actor3_model,actor4_model,director_model);
-						settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
+						settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
 								actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
 								actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 					}
@@ -689,7 +689,7 @@ public class GUI {
 					}
 					setcountry(con,clickedGenre, date_from[0], date_to[0],condition[0],clickedCountry,country_model,actor1_model,
 							actor2_model,actor2_model,actor3_model,actor4_model,director_model);
-					settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
+					settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
 							actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
 							actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 			
@@ -742,7 +742,7 @@ public class GUI {
 						}
 	            	}
 	            	
-	            	settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry, actor1comboBox.getSelectedItem().toString(), 
+	            	settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
 							actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
 							actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	            	actor1_model.removeAllElements();
@@ -1164,7 +1164,7 @@ public class GUI {
 
 
 		protected static void settag(Connection con, List<String> clickedGenre, String date_from, String date_to, 
-				 List<String> clickedCountry, String actor1, String actor2, String actor3, 
+				 List<String> clickedCountry, List<String> clickedTag, String actor1, String actor2, String actor3, 
 				String actor4, String director, String condition,DefaultListModel<JCheckBox> tag_model) {
 		// TODO Auto-generated method stub
 			String genres = "";
@@ -1174,6 +1174,7 @@ public class GUI {
 	    	String directors = "";
 	    	List<String> chosenactors = new ArrayList<>();
 	    	List<String> tagdata = new ArrayList<>();
+	    	clickedTag.clear();
 	    	tag_model.removeAllElements();
 			for (int i = 0; i < clickedGenre.size(); i++) {
 				if (i == 0) {
