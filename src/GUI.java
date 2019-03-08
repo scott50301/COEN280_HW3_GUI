@@ -390,7 +390,7 @@ public class GUI {
 						}
 	            	}
 					
-					if (tagsweighttextField.getText().trim().length() > 0){
+					if (tagsweighttextField.getText().trim().length() > 0 && tags_weight[0].length() > 0){
 						tagsweights += "AND mt.tagWeight " + tags_weight[0] + " "+ tagsweighttextField.getText() + " \n";
 	    			}
 					
