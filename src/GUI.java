@@ -91,6 +91,7 @@ public class GUI {
 	    	DefaultListModel<JCheckBox> country_model = new DefaultListModel<JCheckBox>();
 	    	JCheckBoxList country_checkBoxList = new JCheckBoxList(country_model);
 	    	
+	    	
 	    	//================================================= CAST =================================================//
 
 	    	List<String> actorlistData = new ArrayList<>();
@@ -552,6 +553,7 @@ public class GUI {
 	    	    @Override
 	    	    public void actionPerformed(ActionEvent e) {
 	    	    	String movieResult = "";
+	    	    	String tag = "";
 	    	    	String userResult = "";
 	    	    	String query = "";
 	    	    	for (int i = 0; i < clickedMovieresult.size(); i++) {
@@ -560,24 +562,42 @@ public class GUI {
 							movieResult += "AND ";
 							if (condition[0].equals("OR"))
 								movieResult += "(";
-							movieResult += " ur.userID IN (SELECT ur.userID FROM USER_RATEDMOVIES ur WHERE ur.movieID =  "+movieID+") \n";
+							movieResult += "  ut.userID IN (SELECT ut.userID FROM USER_TAGGEDMOVIES ut WHERE ut.movieID =  "+movieID+") \n";
 						}
 						else {
-							movieResult += condition[0]+" ur.userID IN (SELECT ur.userID FROM USER_RATEDMOVIES ur WHERE ur.movieID =  "+movieID+") \n";
+							movieResult += condition[0]+" ut.userID IN (SELECT ut.userID FROM USER_TAGGEDMOVIES ut WHERE ut.movieID = "+movieID+") \n";
 						}
 	            	}
 	    	    	
-	    	    	if (clickedMovieresult.size() > 0)	{
-	    	    		query = "SELECt ur.userID \n"+ 
-    	    					"FROM USER_RATEDMOVIES ur, MOVIES m \n"+
-    	    					"WHERE ur.movieID = m.id \n" +
+	    	    	for (int i = 0; i < clickedTag.size(); i++) {
+						String tagID = clickedTag.get(i).split(" ")[0];
+						if (i == 0) {
+							tag += "AND ";
+							if (condition[0].equals("OR"))
+								tag += "(";
+							tag += "  ut.userID IN (SELECT ut.userID FROM USER_TAGGEDMOVIES ut WHERE  ut.tagID = "+tagID+") \n";
+						}
+						else {
+							tag += condition[0]+" ut.userID IN (SELECT ut.userID FROM USER_TAGGEDMOVIES ut WHERE  ut.tagID = "+tagID+") \n";
+						}
+	            	}
+	    	    	
+	    	    	if (clickedMovieresult.size() > 0 || clickedTag.size() > 0)	{
+	    	    		query = "SELECt ut.userID \n"+ 
+    	    					"FROM USER_TAGGEDMOVIES ut, MOVIES m , TAGS t \n"+
+    	    					"WHERE ut.movieID = m.id  \n" +
+    	    					"AND ut.tagID = t.id \n"+
     	    					movieResult;
 		    	    	if (movieResult.length() > 0 && condition[0].equals("OR")) {
 		    	    			query += ")";
 		    	    	}
-    	    			query += "GROUP BY ur.userID \n"+
-    	    					 "ORDER BY ur.userID";
-	    	    	System.out.println(query);
+		    	    	query += tag;
+		    	    	if (tag.length() > 0 && condition[0].equals("OR")) {
+		    	    			query += ")";
+		    	    	}
+    	    			query += "GROUP BY ut.userID \n"+
+    	    					 "ORDER BY ut.userID";
+	    	    	//System.out.println(query);
 	    	    	
 	    	    			
 	    	    	try {
@@ -1312,7 +1332,7 @@ public class GUI {
 					query += movieyear+
 							 "GROUP BY t.id, t.value \n"+
 							 "ORDER BY t.id, t.value ";
-        	System.out.println(query);
+        	//System.out.println(query);
         	try {
 				ResultSet GetTags = con.createStatement().executeQuery(query);
 				
