@@ -771,14 +771,14 @@ public class GUI {
 							actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
 							actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	            	actor1_model.removeAllElements();
+	            	actor1_model.addElement("");
 					actor2_model.removeAllElements();
-					actor3_model.removeAllElements();
-					actor4_model.removeAllElements();
-					director_model.removeAllElements();
-					actor1_model.addElement("");
 					actor2_model.addElement("");
+					actor3_model.removeAllElements();
 					actor3_model.addElement("");
+					actor4_model.removeAllElements();
 					actor4_model.addElement("");
+					director_model.removeAllElements();	
 					director_model.addElement("");	
 	            	if (clickedCountry.size() > 0) {
 		            	countires[0] = "";
@@ -994,19 +994,15 @@ public class GUI {
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (actor1comboBox.getSelectedIndex() != 0) {
-	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
-									actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
-									actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	                		//chosenactors.add(actor1comboBox.getSelectedItem().toString());
 	                		//System.out.println(tags_weight[0]);
 	                	}
 	                	else {
-	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, "", 
-									"","",
-									"","",condition[0],tag_model);
 	                		//chosenactors.remove(actor1comboBox.getSelectedItem().toString());
 	                	}
-	                	
+	                	settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
+								actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+								actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	                }
 	                
 	            }
@@ -1018,19 +1014,15 @@ public class GUI {
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (actor2comboBox.getSelectedIndex() != 0) {
-	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
-									actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
-									actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	                		//chosenactors.add(actor2comboBox.getSelectedItem().toString());
 	                		//System.out.println(tags_weight[0]);
 	                	}
 	                	else {
-	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, "", 
-									"","",
-									"","",condition[0],tag_model);
 	                		//chosenactors.remove(actor2comboBox.getSelectedItem().toString());
 	                	}
-
+	                	settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
+								actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+								actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	                }
 	                
 	            }
@@ -1042,19 +1034,16 @@ public class GUI {
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (actor3comboBox.getSelectedIndex() != 0) {
-	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
-									actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
-									actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	                		//chosenactors.add(actor3comboBox.getSelectedItem().toString());
 	                		//System.out.println(tags_weight[0]);
 	                	}
 	                	else {
-	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, "", 
-									"","",
-									"","",condition[0],tag_model);
+
 	                		//chosenactors.remove(actor3comboBox.getSelectedItem().toString());
 	                	}
-
+	                	settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
+								actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+								actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	                }
 	               
 	            }
@@ -1066,18 +1055,15 @@ public class GUI {
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (actor4comboBox.getSelectedIndex() != 0) {
-	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
-									actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
-									actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	                		//chosenactors.add(actor4comboBox.getSelectedItem().toString());
 	                		//System.out.println(tags_weight[0]);
 	                	}
 	                	else {
-	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, "", 
-									"","",
-									"","",condition[0],tag_model);
 	                		//chosenactors.remove(actor4comboBox.getSelectedItem().toString());
 	                	}
+	                	settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
+								actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+								actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	                }
 	                
 	            }
@@ -1090,19 +1076,16 @@ public class GUI {
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (directorcomboBox.getSelectedIndex() != 0) {
-	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
-									actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
-									actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
+	                		
 	                		//chosendirector.add(directorcomboBox.getSelectedItem().toString());
 	                		//System.out.println(tags_weight[0]);
 	                	}
 	                	else {
-	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, "", 
-									"","",
-									"","",condition[0],tag_model);
 	                		//chosendirector.remove(directorcomboBox.getSelectedItem().toString());
 	                	}
-	                	
+	                	settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
+								actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+								actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	                }
 	                
 	            }
@@ -1126,14 +1109,14 @@ public class GUI {
 			clickedCountry.clear();
 			country_model.removeAllElements();
 			actor1_model.removeAllElements();
+			actor1_model.addElement("");
 			actor2_model.removeAllElements();
-			actor3_model.removeAllElements();
-			actor4_model.removeAllElements();
-			director_model.removeAllElements();
-        	actor1_model.addElement("");
 			actor2_model.addElement("");
+			actor3_model.removeAllElements();
 			actor3_model.addElement("");
+			actor4_model.removeAllElements();
 			actor4_model.addElement("");
+			director_model.removeAllElements();
 			director_model.addElement("");
 			String genres = "";
 			String movieyear = "";
