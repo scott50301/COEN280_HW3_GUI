@@ -121,7 +121,7 @@ public class GUI {
 	    	DefaultListModel<JCheckBox> tag_model = new DefaultListModel<JCheckBox>();
 	    	JCheckBoxList tag_checkBoxList = new JCheckBoxList(tag_model);
 	    	
-	    	String[] tagsweightlistData = new String[]{"=,>,<", "=", ">", "<"};
+	    	String[] tagsweightlistData = new String[]{"=,>,<", "=", ">", "<",">=","<="};
 	    	JComboBox<String> tagsweightcomboBox = new JComboBox<String>(tagsweightlistData);
 	        String[] tags_weight = new String[1];
 	        tags_weight[0] = "";
@@ -378,7 +378,9 @@ public class GUI {
 							
 						}
 	            	}
-					
+					if (tagsweighttextField.getText().trim().length() > 0 && tags_weight[0].length() > 0){
+						tagsweights += "AND mt.tagWeight " + tags_weight[0] + " "+ tagsweighttextField.getText() + " \n";
+	    			}
 					//tags
 					for (int i = 0; i < clickedTag.size(); i++) {
 						String tagID = clickedTag.get(i).split(" ")[0];
@@ -386,16 +388,14 @@ public class GUI {
 							tags += "AND ";
 							if (condition[0].equals("OR"))
 								tags += "(";
-							tags += " m.id IN (SELECT mt.movieID FROM MOVIE_TAGS mt WHERE mt.tagID = "+tagID+") \n";
+							tags += " m.id IN (SELECT mt.movieID FROM MOVIE_TAGS mt WHERE mt.tagID = "+tagID+" "+tagsweights+") \n";
 						}
 						else {
-							tags += condition[0]+"  m.id IN (SELECT mt.movieID FROM MOVIE_TAGS mt WHERE mt.tagID = "+tagID+") \n";
+							tags += condition[0]+"  m.id IN (SELECT mt.movieID FROM MOVIE_TAGS mt WHERE mt.tagID = "+tagID+" "+tagsweights+") \n";
 						}
 	            	}
 					
-					if (tagsweighttextField.getText().trim().length() > 0 && tags_weight[0].length() > 0){
-						tagsweights += "AND mt.tagWeight " + tags_weight[0] + " "+ tagsweighttextField.getText() + " \n";
-	    			}
+					
 					
 					//Actors
 					chosenactors.clear();
@@ -486,9 +486,6 @@ public class GUI {
 							query += ") \n";
 					}
 					
-					if (tagsweights.length() > 0) {
-							query += tagsweights;
-					}
 							query += actors;
 					if (condition[0].equals("OR") && actors.length() > 0) {
 							query += ") \n";
@@ -558,33 +555,27 @@ public class GUI {
 	    	    	String tag = "";
 	    	    	String userResult = "";
 	    	    	String query = "";
-	    	    	for (int i = 0; i < clickedMovieresult.size(); i++) {
-						String movieID = clickedMovieresult.get(i);
-						if (i == 0) {
-							movieResult += "AND ";
-							if (condition[0].equals("OR"))
-								movieResult += "(";
-							movieResult += "  ut.userID IN (SELECT ut.userID FROM USER_TAGGEDMOVIES ut WHERE ut.movieID =  "+movieID+") \n";
-						}
-						else {
-							movieResult += condition[0]+" ut.userID IN (SELECT ut.userID FROM USER_TAGGEDMOVIES ut WHERE ut.movieID = "+movieID+") \n";
-						}
-	            	}
-	    	    	
-	    	    	for (int i = 0; i < clickedTag.size(); i++) {
-						String tagID = clickedTag.get(i).split(" ")[0];
-						if (i == 0) {
-							tag += "AND ";
-							if (condition[0].equals("OR"))
-								tag += "(";
-							tag += "  ut.userID IN (SELECT ut.userID FROM USER_TAGGEDMOVIES ut WHERE  ut.tagID = "+tagID+") \n";
-						}
-						else {
-							tag += condition[0]+" ut.userID IN (SELECT ut.userID FROM USER_TAGGEDMOVIES ut WHERE  ut.tagID = "+tagID+") \n";
-						}
-	            	}
-	    	    	
+	    	    	int index = 0;
 	    	    	if (clickedMovieresult.size() > 0 && clickedTag.size() > 0)	{
+		    	    	for (int i = 0; i < clickedMovieresult.size(); i++) {
+							String movieID = clickedMovieresult.get(i);
+							for (int j = 0; j < clickedTag.size(); j++) {
+								String tagID = clickedTag.get(j).split(" ")[0];
+								if (index == 0) {
+									movieResult += "AND ";
+									if (condition[0].equals("OR"))
+										movieResult += "(";
+									movieResult += "  ut.userID IN (SELECT ut.userID FROM USER_TAGGEDMOVIES ut WHERE ut.movieID =  "+movieID+" AND ut.tagID = "+tagID+") \n";
+								}
+								else {
+									movieResult += condition[0]+" ut.userID IN (SELECT ut.userID FROM USER_TAGGEDMOVIES ut WHERE ut.movieID = "+movieID+" AND ut.tagID = "+tagID+") \n";
+								}
+								index++;
+							}
+							
+		            	}
+		    	    	
+	    	    	
 	    	    		query = "SELECt ut.userID \n"+ 
     	    					"FROM USER_TAGGEDMOVIES ut, MOVIES m , TAGS t \n"+
     	    					"WHERE ut.movieID = m.id  \n" +
