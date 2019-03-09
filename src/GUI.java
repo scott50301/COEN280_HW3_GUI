@@ -171,7 +171,8 @@ public class GUI {
 	    	frame.add(lb_year_from);
 	    	
 	    	datepicker startDateChooser = datepicker.getInstance("yyyy-MM-dd");
-			JTextField showStartDate = new JTextField("Click to select date");
+			JTextField showStartDate = new JTextField("1903-01-01");
+			date_from[0] = "1903";
 			startDateChooser.register(showStartDate);
 			showStartDate.setEditable(false);
 			showStartDate.setBounds(70, 460, 150, 30);
@@ -189,7 +190,8 @@ public class GUI {
 	    	frame.add(lb_year_to);
 	    	
 	    	datepicker endDateChooser = datepicker.getInstance("yyyy-MM-dd");
-			JTextField showEndDate = new JTextField("Click to select date");
+			JTextField showEndDate = new JTextField("2019-03-09");
+			date_to[0] = "2019";
 			showEndDate.setEditable(false);
 			endDateChooser.register(showEndDate);
 			showEndDate.setBounds(70, 510, 150, 30);
@@ -528,9 +530,9 @@ public class GUI {
 						  	movieresultdata.add(movie_result);
 						}
 						
-						Font f = new Font("Serif", Font.BOLD, 20); 
+					
 						jt.setText("");
-			            jt.setFont(f);
+			            jt.setFont(new Font("Serif", Font.BOLD, 20));
 			            jt.append(query); 
 			           
 						
@@ -582,7 +584,7 @@ public class GUI {
 						}
 	            	}
 	    	    	
-	    	    	if (clickedMovieresult.size() > 0 || clickedTag.size() > 0)	{
+	    	    	if (clickedMovieresult.size() > 0 && clickedTag.size() > 0)	{
 	    	    		query = "SELECt ut.userID \n"+ 
     	    					"FROM USER_TAGGEDMOVIES ut, MOVIES m , TAGS t \n"+
     	    					"WHERE ut.movieID = m.id  \n" +
@@ -611,6 +613,9 @@ public class GUI {
 						jt_user_result.setFont(new Font("Serif", Font.BOLD, 20));
 						jt_user_result.append(userResult);
 						
+						jt.setText("");
+						jt.setFont(new Font("Serif", Font.BOLD, 20));
+			            jt.append(query);
 						} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -947,11 +952,11 @@ public class GUI {
 	    		}
 				
 	      	});
-	    	// 添加条目选中状态改变的监听器
+	    	// 
 	    	conditioncomboBox.addItemListener(new ItemListener() {
 	            @Override
 	            public void itemStateChanged(ItemEvent e) {
-	                // 只处理选中的状态
+	                // 
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (conditioncomboBox.getSelectedIndex() != 0) {
@@ -989,13 +994,19 @@ public class GUI {
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (actor1comboBox.getSelectedIndex() != 0) {
+	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
+									actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+									actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	                		//chosenactors.add(actor1comboBox.getSelectedItem().toString());
 	                		//System.out.println(tags_weight[0]);
 	                	}
 	                	else {
+	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, "", 
+									"","",
+									"","",condition[0],tag_model);
 	                		//chosenactors.remove(actor1comboBox.getSelectedItem().toString());
 	                	}
-    
+	                	
 	                }
 	                
 	            }
@@ -1007,13 +1018,19 @@ public class GUI {
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (actor2comboBox.getSelectedIndex() != 0) {
+	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
+									actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+									actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	                		//chosenactors.add(actor2comboBox.getSelectedItem().toString());
 	                		//System.out.println(tags_weight[0]);
 	                	}
 	                	else {
+	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, "", 
+									"","",
+									"","",condition[0],tag_model);
 	                		//chosenactors.remove(actor2comboBox.getSelectedItem().toString());
 	                	}
-    
+
 	                }
 	                
 	            }
@@ -1025,13 +1042,19 @@ public class GUI {
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (actor3comboBox.getSelectedIndex() != 0) {
+	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
+									actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+									actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	                		//chosenactors.add(actor3comboBox.getSelectedItem().toString());
 	                		//System.out.println(tags_weight[0]);
 	                	}
 	                	else {
+	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, "", 
+									"","",
+									"","",condition[0],tag_model);
 	                		//chosenactors.remove(actor3comboBox.getSelectedItem().toString());
 	                	}
-    
+
 	                }
 	               
 	            }
@@ -1043,13 +1066,18 @@ public class GUI {
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (actor4comboBox.getSelectedIndex() != 0) {
+	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
+									actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+									actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
 	                		//chosenactors.add(actor4comboBox.getSelectedItem().toString());
 	                		//System.out.println(tags_weight[0]);
 	                	}
 	                	else {
+	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, "", 
+									"","",
+									"","",condition[0],tag_model);
 	                		//chosenactors.remove(actor4comboBox.getSelectedItem().toString());
 	                	}
-    
 	                }
 	                
 	            }
@@ -1062,13 +1090,19 @@ public class GUI {
 	            	
 	                if (e.getStateChange() == ItemEvent.SELECTED) {
 	                	if (directorcomboBox.getSelectedIndex() != 0) {
-	                		chosendirector.add(directorcomboBox.getSelectedItem().toString());
+	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, actor1comboBox.getSelectedItem().toString(), 
+									actor2comboBox.getSelectedItem().toString(),actor3comboBox.getSelectedItem().toString(),
+									actor4comboBox.getSelectedItem().toString(),directorcomboBox.getSelectedItem().toString(),condition[0],tag_model);
+	                		//chosendirector.add(directorcomboBox.getSelectedItem().toString());
 	                		//System.out.println(tags_weight[0]);
 	                	}
 	                	else {
-	                		chosendirector.remove(directorcomboBox.getSelectedItem().toString());
+	                		settag(con,clickedGenre, date_from[0], date_to[0],clickedCountry,clickedTag, "", 
+									"","",
+									"","",condition[0],tag_model);
+	                		//chosendirector.remove(directorcomboBox.getSelectedItem().toString());
 	                	}
-    
+	                	
 	                }
 	                
 	            }
@@ -1104,7 +1138,7 @@ public class GUI {
 			String genres = "";
 			String movieyear = "";
 			List<String> countrydata = new ArrayList<>();
-        	if (clickedGenre.size() > 0 || date_from.length() > 0 || date_to.length() > 0) {
+        	if (clickedGenre.size() > 0 && (date_from.length() > 0 || date_to.length() > 0)) {
             	genres = "";
             	for (int i = 0; i < clickedGenre.size(); i++) {
 					if (i == 0) {
@@ -1141,6 +1175,7 @@ public class GUI {
 				
 				
 				try {
+					
 					ResultSet GetCountries = con.createStatement().executeQuery(query);
 					countrydata.clear();
 					while (GetCountries.next()) {
@@ -1175,14 +1210,6 @@ public class GUI {
 
 
 
-
-
-
-
-
-
-
-
 		protected static void settag(Connection con, List<String> clickedGenre, String date_from, String date_to, 
 				 List<String> clickedCountry, List<String> clickedTag, String actor1, String actor2, String actor3, 
 				String actor4, String director, String condition,DefaultListModel<JCheckBox> tag_model) {
@@ -1196,169 +1223,170 @@ public class GUI {
 	    	List<String> tagdata = new ArrayList<>();
 	    	clickedTag.clear();
 	    	tag_model.removeAllElements();
-			for (int i = 0; i < clickedGenre.size(); i++) {
-				if (i == 0) {
-					genres += "AND ";
-					if (condition.equals("OR"))
-						genres += "(";
-					genres += "m.id in (SELECT mg.movieID FROM MOVIE_GENRES mg WHERE mg.GENRE =  '"+clickedGenre.get(i)+"') \n";
+	    	if (clickedGenre.size() > 0 || date_from.length() > 0 || date_to.length() > 0) {
+				for (int i = 0; i < clickedGenre.size(); i++) {
+					if (i == 0) {
+						genres += "AND ";
+						if (condition.equals("OR"))
+							genres += "(";
+						genres += "m.id in (SELECT mg.movieID FROM MOVIE_GENRES mg WHERE mg.GENRE =  '"+clickedGenre.get(i)+"') \n";
+					}
+					else {
+						genres += condition+" m.id IN (SELECT mg.movieID FROM MOVIE_GENRES mg WHERE  mg.GENRE =  '"+clickedGenre.get(i)+"') \n";
+						
+					}
+						
 				}
-				else {
-					genres += condition+" m.id IN (SELECT mg.movieID FROM MOVIE_GENRES mg WHERE  mg.GENRE =  '"+clickedGenre.get(i)+"') \n";
-					
+				//Year
+				if (date_from.length() > 0 && !date_from.equals("Click to select date")) {
+	        		movieyear += "AND m.year >=" + date_from.split("-")[0] + " \n";
+	        	}
+	        	if (date_to.length() > 0 && !date_to.equals("Click to select date")) {
+	        		movieyear += "AND m.year <=" + date_to.split("-")[0] + " \n";
+	        	}
+				//countries
+				for (int i = 0; i < clickedCountry.size(); i++) {
+					if (i == 0) {
+						countries += "AND ";
+						if (condition.equals("OR"))
+							countries += "(";
+						countries += " m.id IN (SELECT mc.movieID FROM MOVIE_COUNTRIES mc WHERE mc.COUNTRY =  '"+clickedCountry.get(i)+"') \n";
+					}
+					else {
+						countries += condition+" m.id IN (SELECT mc.movieID FROM MOVIE_COUNTRIES mc WHERE  mc.COUNTRY =  '"+clickedCountry.get(i)+"') \n";
+						
+					}
+	        	}
+				
+				
+				
+				//Actors
+				if (actor1.length() > 0) {
+					chosenactors.add(actor1);
 				}
-					
-			}
-			//Year
-			if (date_from.length() > 0 && !date_from.equals("Click to select date")) {
-        		movieyear += "AND m.year >=" + date_from.split("-")[0] + " \n";
-        	}
-        	if (date_to.length() > 0 && !date_to.equals("Click to select date")) {
-        		movieyear += "AND m.year <=" + date_to.split("-")[0] + " \n";
-        	}
-			//countries
-			for (int i = 0; i < clickedCountry.size(); i++) {
-				if (i == 0) {
-					countries += "AND ";
-					if (condition.equals("OR"))
-						countries += "(";
-					countries += " m.id IN (SELECT mc.movieID FROM MOVIE_COUNTRIES mc WHERE mc.COUNTRY =  '"+clickedCountry.get(i)+"') \n";
+				if (actor2.length() > 0) {
+					chosenactors.add(actor2);
 				}
-				else {
-					countries += condition+" m.id IN (SELECT mc.movieID FROM MOVIE_COUNTRIES mc WHERE  mc.COUNTRY =  '"+clickedCountry.get(i)+"') \n";
-					
+				if (actor3.length() > 0) {
+					chosenactors.add(actor3);
 				}
-        	}
-			
-			
-			
-			//Actors
-			if (actor1.length() > 0) {
-				chosenactors.add(actor1);
-			}
-			if (actor2.length() > 0) {
-				chosenactors.add(actor2);
-			}
-			if (actor3.length() > 0) {
-				chosenactors.add(actor3);
-			}
-			if (actor4.length() > 0) {
-				chosenactors.add(actor4);
-			}
-			for (int i = 0; i < chosenactors.size(); i++) {
-				String actorName = chosenactors.get(i);
-				if (i == 0) {
-					actors += "AND ";
-					if (condition.equals("OR"))
-						actors += "(";
-					actors += " m.id IN (SELECT ma.movieID FROM MOVIE_ACTORS ma WHERE ma.actorname =  '"+actorName+"') \n";
+				if (actor4.length() > 0) {
+					chosenactors.add(actor4);
 				}
-				else {
-					actors += condition+" m.id IN (SELECT ma.movieID FROM MOVIE_ACTORS ma WHERE ma.actorname =  '"+actorName+"') \n";
+				for (int i = 0; i < chosenactors.size(); i++) {
+					String actorName = chosenactors.get(i);
+					if (i == 0) {
+						actors += "AND ";
+						if (condition.equals("OR"))
+							actors += "(";
+						actors += " m.id IN (SELECT ma.movieID FROM MOVIE_ACTORS ma WHERE ma.actorname =  '"+actorName+"') \n";
+					}
+					else {
+						actors += condition+" m.id IN (SELECT ma.movieID FROM MOVIE_ACTORS ma WHERE ma.actorname =  '"+actorName+"') \n";
+					}
+	        	}
+				
+				//Director
+				
+				for (int i = 0; i < director.length(); i++) {
+					String directorName = director;
+					if (i == 0) {
+						directors += "AND ";
+						if (condition.equals("OR"))
+							directors += "(";
+						directors += " m.id IN (SELECT md.movieID FROM MOVIE_DIRECTORS md WHERE md.directorName =  '"+directorName+"') \n";
+					}
+					else {
+						directors += condition+" m.id IN (SELECT md.movieID FROM MOVIE_DIRECTORS md WHERE md.directorName =  '"+directorName+"') \n";
+					}
+	        	}
+				
+				
+				//Built query string
+				String query =	"SELECT t.id, t.value \n" + 
+								"FROM  MOVIES m, TAGS t, MOVIE_TAGS mt " ;
+				if (genres.length() > 0) {
+					query += ", MOVIE_GENRES mg";
 				}
-        	}
-			
-			//Director
-			
-			for (int i = 0; i < director.length(); i++) {
-				String directorName = director;
-				if (i == 0) {
-					directors += "AND ";
-					if (condition.equals("OR"))
-						directors += "(";
-					directors += " m.id IN (SELECT md.movieID FROM MOVIE_DIRECTORS md WHERE md.directorName =  '"+directorName+"') \n";
+				if (countries.length() > 0) {
+					query += ", MOVIE_COUNTRIES mc";
 				}
-				else {
-					directors += condition+" m.id IN (SELECT md.movieID FROM MOVIE_DIRECTORS md WHERE md.directorName =  '"+directorName+"') \n";
+				  
+				if (actors.length() > 0) {
+					query += ", MOVIE_ACTORS ma";
 				}
-        	}
-			
-			
-			//Built query string
-			String query =	"SELECT t.id, t.value \n" + 
-							"FROM  MOVIES m, TAGS t, MOVIE_TAGS mt " ;
-			if (genres.length() > 0) {
-				query += ", MOVIE_GENRES mg";
-			}
-			if (countries.length() > 0) {
-				query += ", MOVIE_COUNTRIES mc";
-			}
-			  
-			if (actors.length() > 0) {
-				query += ", MOVIE_ACTORS ma";
-			}
-			if (directors.length() > 0) {
-				query += ", MOVIE_DIRECTORS md";
-			}
-			query += "\n WHERE  mt.movieID = m.id \n"+
-					"AND mt.TAGID = t.id \n";
-					
-			
-			if (genres.length() > 0) {
-				query += "AND mg.movieID = m.id \n";
-			}	
-			if (countries.length() > 0) {
-				query += "AND mc.movieID = m.id \n";
-			}
-
-			if (actors.length() > 0 ) {
-				query += "AND ma.movieID = m.id \n";
-			}
-			if (directors.length() > 0 ) {
-				query += "AND md.movieID = m.id \n";
-			}
-							
-					query += genres;
-			
-			if (condition.equals("OR") && genres.length() > 0) {
-					query += ") \n";
-			}
-			
-					query += countries;
-					
-			if (condition.equals("OR") && countries.length() > 0) {
-					query += ") \n";
-			}
-
-					query += actors;
-			if (condition.equals("OR") && actors.length() > 0) {
-					query += ") \n";
-			}
-					
-					query += directors;
-			if (condition.equals("OR") && directors.length() > 0) {
+				if (directors.length() > 0) {
+					query += ", MOVIE_DIRECTORS md";
+				}
+				query += "\n WHERE  mt.movieID = m.id \n"+
+						"AND mt.TAGID = t.id \n";
+						
+				
+				if (genres.length() > 0) {
+					query += "AND mg.movieID = m.id \n";
+				}	
+				if (countries.length() > 0) {
+					query += "AND mc.movieID = m.id \n";
+				}
+	
+				if (actors.length() > 0 ) {
+					query += "AND ma.movieID = m.id \n";
+				}
+				if (directors.length() > 0 ) {
+					query += "AND md.movieID = m.id \n";
+				}
+								
+						query += genres;
+				
+				if (condition.equals("OR") && genres.length() > 0) {
 						query += ") \n";
-			}
-					query += movieyear+
-							 "GROUP BY t.id, t.value \n"+
-							 "ORDER BY t.id, t.value ";
-        	//System.out.println(query);
-        	try {
-				ResultSet GetTags = con.createStatement().executeQuery(query);
+				}
 				
-				while (GetTags.next()) {
-				  	String tagid = GetTags.getString("id");
-				  	String tagvalue = GetTags.getString("value");
-				  	tagdata.add(tagid+" "+tagvalue);
+						query += countries;
+						
+				if (condition.equals("OR") && countries.length() > 0) {
+						query += ") \n";
+				}
+	
+						query += actors;
+				if (condition.equals("OR") && actors.length() > 0) {
+						query += ") \n";
+				}
+						
+						query += directors;
+				if (condition.equals("OR") && directors.length() > 0) {
+							query += ") \n";
+				}
+						query += movieyear+
+								 "GROUP BY t.id, t.value \n"+
+								 "ORDER BY t.id, t.value ";
+	        	//System.out.println(query);
+	        	try {
+					ResultSet GetTags = con.createStatement().executeQuery(query);
+					
+					while (GetTags.next()) {
+					  	String tagid = GetTags.getString("id");
+					  	String tagvalue = GetTags.getString("value");
+					  	tagdata.add(tagid+" "+tagvalue);
+					  	
+					}
+					
+					
+					
 				  	
+					for (String tag : tagdata) {
+						tag_model.addElement(new JCheckBox(tag));
+					}
+					
+					
+	
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				
-				
-				
-			  	
-				for (String tag : tagdata) {
-					tag_model.addElement(new JCheckBox(tag));
-				}
-				
-				
-
-				
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
     	
-        	
+	    	}
 		}
 
 
